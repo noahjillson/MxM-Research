@@ -3,10 +3,6 @@ from fsm import FSMGenerator
 from horospheres import HorosphereGenerator
 
 
-#def generate_fsm_nodes() -> list:
-#    pass
-
-
 if __name__ == '__main__':
     # v = VertexName("dcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadc")
     # v = VertexName("acd") # ADC??
@@ -28,7 +24,7 @@ if __name__ == '__main__':
     # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
     #                                        c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c']})
 
-    horo = HorosphereGenerator.generate_horosphere(1)
+    horo = HorosphereGenerator.generate_horosphere(3)
     proc_horo = HorosphereGenerator.process_horosphere(horo)
     # print(proc_horo)
     # print(VertexName.remove_dupes('aa'))

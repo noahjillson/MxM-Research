@@ -2,7 +2,6 @@ from fsm import FSMGenerator, FSMCrawler
 import matplotlib.pyplot as plt
 from vertices import VertexName
 import networkx as nx
-#import scipy
 
 
 class HorosphereGenerator:
@@ -37,7 +36,6 @@ class HorosphereGenerator:
 
     @staticmethod
     def process_horosphere(horosphere):
-
         post_processed_horosphere = []
         map = ['a', 'c']
         for vertex in horosphere:
@@ -45,7 +43,7 @@ class HorosphereGenerator:
             prefix = ''
             for idx, x in enumerate(vertex):
                 prefix = prefix + map[mod]
-                mod = (mod + 1) % 2
+                mod = idx % 2
             post_processed_horosphere.append(prefix + vertex)
 
         return post_processed_horosphere
@@ -73,6 +71,6 @@ class HorosphereGenerator:
         fig, axes = plt.subplots(figsize=(9, 5))
         G.add_edges_from(connections)
 
-        nx.draw(G, pos=nx.planar_layout(G), node_size=20, with_labels=False, font_size=5, node_color='pink', alpha=1)
+        nx.draw(G, pos=nx.spectral_layout(G), node_size=80, with_labels=False, font_size=5, node_color='pink', alpha=1)
 
         plt.show()
