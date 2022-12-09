@@ -1,5 +1,6 @@
 from vertices import VertexName
 from fsm import FSMGenerator
+from horospheres import HorosphereGenerator
 
 
 #def generate_fsm_nodes() -> list:
@@ -22,7 +23,12 @@ if __name__ == '__main__':
     jt = FSMGenerator.generate_jump_table(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
     print(jt)
 
-    FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4})
+    FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
+                                           c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c']})
+
+    HorosphereGenerator.generate_horosphere(3)
+
+    # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4})
 
     #
     # d = FSMGenerator.generate_fsm_nodes(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},

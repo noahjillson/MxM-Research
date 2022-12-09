@@ -110,3 +110,14 @@ class FSMGenerator:
         nx.draw(G, pos=nx.circular_layout(G), node_size=500, with_labels=True, font_size=12, arrowsize=15, node_color='pink')
         # nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels)
         plt.show()
+
+
+class FSMCrawler:
+    def __init__(self, current_vertex: VertexName, previous_vertex, crawl_history: str, dist_crawled):
+        self.current_vertex = current_vertex
+        self.previous_vertex = previous_vertex
+        self.crawl_history = crawl_history
+        self.dist_crawled = dist_crawled
+
+    def crawl(self, destination):
+        pass
