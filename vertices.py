@@ -62,3 +62,44 @@ class VertexName:
         for char in self.o_map:
             truth_table[char] = self.is_valid_append(char)
         return truth_table
+
+
+    @staticmethod
+    def append(vertex_name, op_string: str, c_map=None):
+        if c_map is None:
+            c_map = {'a': ['b', 'e'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['c', 'e'], 'e': ['d', 'a']}
+
+        for op in op_string:
+            idx = 0
+            while idx < len(vertex_name) and op in c_map[vertex_name[idx]]:
+                idx += 1
+            if idx < len(vertex_name)-1 and op == vertex_name[idx]:
+                vertex_name = vertex_name[:idx] + vertex_name[idx+1:]
+            elif idx < len(vertex_name) and op == vertex_name[idx]:
+                vertex_name = vertex_name[:idx]
+            elif idx < len(vertex_name):
+                vertex_name = vertex_name[:idx] + op + vertex_name[idx:]
+            else:
+                vertex_name = vertex_name + op
+
+        return vertex_name
+
+
+    @staticmethod
+    def remove_dupes(vertex_name, c_map=None):
+        if c_map is None:
+            c_map = {'a': ['b', 'e'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['c', 'e'], 'e': ['d', 'a']}
+
+        for idx, char in enumerate(vertex_name):
+            while idx < len(vertex_name) and char in c_map[vertex_name[idx]]:
+                idx += 1
+            if idx < len(vertex_name) - 2 and char == vertex_name[idx]:
+                vertex_name = vertex_name[:idx] + vertex_name[idx + 2:]
+            elif idx < len(vertex_name) and char == vertex_name[idx]:
+                vertex_name = vertex_name[:idx]
+            elif idx < len(vertex_name):
+                vertex_name = vertex_name + char + vertex_name[idx:]
+            else:
+                vertex_name = vertex_name + char
+
+        return vertex_name

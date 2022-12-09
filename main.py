@@ -16,17 +16,25 @@ if __name__ == '__main__':
     # print(v.is_valid_append("c"))
     # print(v.generate_truth_table())
     # print(FSMGenerator.generate_fsm_nodes())
-    d = FSMGenerator.generate_fsm_nodes(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
-    for key in d:
-        print(key + "," + str(d[key]))
 
-    jt = FSMGenerator.generate_jump_table(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
-    print(jt)
+    # ACTUALLY IMPORTANT STUFF
+    # d = FSMGenerator.generate_fsm_nodes(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
+    # for key in d:
+    #     print(key + "," + str(d[key]))
+    #
+    # jt = FSMGenerator.generate_jump_table(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
+    # print(jt)
+    #
+    # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
+    #                                        c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c']})
 
-    FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
-                                           c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c']})
-
-    HorosphereGenerator.generate_horosphere(3)
+    horo = HorosphereGenerator.generate_horosphere(1)
+    proc_horo = HorosphereGenerator.process_horosphere(horo)
+    # print(proc_horo)
+    # print(VertexName.remove_dupes('aa'))
+    # print(VertexName.append('ab', 'ad'))
+    HorosphereGenerator.visualize_horosphere(proc_horo)
+    # print("hello world")
 
     # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4})
 
