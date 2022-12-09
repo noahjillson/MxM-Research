@@ -19,7 +19,7 @@ if __name__ == '__main__':
     for key in d:
         print(key + "," + str(d[key]))
 
-    jt = FSMGenerator.generate_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4})
+    jt = FSMGenerator.generate_jump_table(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
     print(jt)
 
     FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4})
