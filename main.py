@@ -3,6 +3,32 @@ from fsm import FSMGenerator
 from horospheres import HorosphereGenerator
 
 
+def test_horosphere():
+    indentation = "     "
+    c_map = {'a': ['b', 'e'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['c', 'e'], 'e': ['d', 'a']}
+    o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
+    depth = 4
+
+    # Print global values used by all functions
+    print("Globals:\n" + indentation + "c_map: " + str(c_map) + "\n" + indentation + "o_map: " + str(o_map))
+
+    # Print function name, function specific args, and function return value
+    print("\nTesting \'generate_horosphere\' function:\n" + indentation + "Args: depth=" + str(depth))
+    partial_horosphere = HorosphereGenerator.generate_horosphere(depth=depth, c_map=c_map, o_map=o_map)
+    print(indentation + "Returns: " + str(partial_horosphere))
+
+    print("\nTesting \'process_horosphere\' function:\n" + indentation + "Args: horosphere=generate_horosphere(" + str(depth) + ")")
+    processed_horosphere = HorosphereGenerator.process_horosphere(partial_horosphere)
+    print(indentation + "Returns: " + str(processed_horosphere))
+
+    print("\nTesting \'evaluate_horosphere_edges\' function:\n" + indentation + "Args: horosphere=process_horosphere( " + "generate_horosphere(" + str(depth) + ")" + " )")
+    horosphere_graph = HorosphereGenerator.evaluate_horosphere_edges(processed_horosphere)
+    print(indentation + "Returns: " + str(horosphere_graph))
+
+    "evaluate_horosphere_edges"
+
+
+
 if __name__ == '__main__':
     # v = VertexName("dcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadc")
     # v = VertexName("acd") # ADC??
@@ -24,7 +50,9 @@ if __name__ == '__main__':
     # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
     #                                        c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c']})
 
-    horo = HorosphereGenerator.generate_horosphere(3)
+    test_horosphere()
+
+    horo = HorosphereGenerator.generate_horosphere(4)
     proc_horo = HorosphereGenerator.process_horosphere(horo)
     # print(proc_horo)
     # print(VertexName.remove_dupes('aa'))

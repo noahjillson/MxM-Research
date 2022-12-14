@@ -48,6 +48,19 @@ class HorosphereGenerator:
 
         return post_processed_horosphere
 
+    @staticmethod
+    def evaluate_horosphere_edges(horosphere):
+        connections = []
+        for idx, x in enumerate(horosphere):
+            if len(x) == 0:
+                pass
+            else:
+                window = idx + 1
+                while window < len(horosphere) and abs(len(horosphere[window]) - len(horosphere[idx])) <= 2:
+                    if len(VertexName.append(horosphere[window], horosphere[idx])) == 2:
+                        connections.append([horosphere[idx], horosphere[window]])
+                    window += 1
+        return connections
 
     @staticmethod
     def visualize_horosphere(horosphere):
@@ -61,6 +74,7 @@ class HorosphereGenerator:
                     if len(VertexName.append(horosphere[window], horosphere[idx])) == 2:
                         connections.append([horosphere[idx], horosphere[window]])
                     window += 1
+        # connections = HorosphereGenerator.evaluate_horosphere_edges(horosphere)
 
         G = nx.Graph()
         print(G)
@@ -68,9 +82,10 @@ class HorosphereGenerator:
         connections.append(['', 'ab'])
         connections.append(['', 'ad'])
         connections.append(['', 'ae'])
-        fig, axes = plt.subplots(figsize=(9, 5))
+        # fig, axes = plt.subplots(figsize=(9, 5))
         G.add_edges_from(connections)
+        print(len(horosphere))
 
-        nx.draw(G, pos=nx.spectral_layout(G), node_size=80, with_labels=False, font_size=5, node_color='pink', alpha=1)
+        nx.draw(G, pos=nx.spring_layout(G), node_size=80, with_labels=True, font_size=5, node_color='pink', alpha=1)
 
         plt.show()
