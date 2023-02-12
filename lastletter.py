@@ -6,8 +6,10 @@ check = "acbc"
 """
 Algorithm: 
 
-Start with the word. Automatically append the last leter to LL
-    Now check the word - 1 for the adjacent letters to the last letter in the previous iteration
+Start with a word W in shortlex.
+If the last letter of w (W without the written last letter) can be something tha commutes with 
+the last written letter of W, then it can be a last letter. 
+Last letter checks for this and also notes that the written last letter of W can also be a last letter.
 """
 
 def last_letters_recursion(w):
