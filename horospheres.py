@@ -42,12 +42,14 @@ class HorosphereGenerator:
             mod = 0
             prefix = ''
             for idx, x in enumerate(vertex):
-                prefix = prefix + map[mod]
                 mod = idx % 2
+                prefix = prefix + map[mod]
+                # mod = idx % 2
             post_processed_horosphere.append(prefix + vertex)
 
         return post_processed_horosphere
 
+    # For Testing purposes
     @staticmethod
     def evaluate_horosphere_edges(horosphere):
         connections = []
@@ -86,6 +88,6 @@ class HorosphereGenerator:
         G.add_edges_from(connections)
         print(len(horosphere))
 
-        nx.draw(G, pos=nx.spring_layout(G), node_size=80, with_labels=True, font_size=5, node_color='pink', alpha=1)
+        nx.draw(G, pos=nx.spring_layout(G), node_size=80, with_labels=True, font_size=10, node_color='pink', alpha=1)
 
         plt.show()

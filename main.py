@@ -25,7 +25,8 @@ def test_horosphere():
     horosphere_graph = HorosphereGenerator.evaluate_horosphere_edges(processed_horosphere)
     print(indentation + "Returns: " + str(horosphere_graph))
 
-    "evaluate_horosphere_edges"
+    print("\nTesting \'visualize_horosphere\' function:\n" + indentation + "Verify results in Matplotlib window")
+    HorosphereGenerator.visualize_horosphere(processed_horosphere)
 
 
 
@@ -47,8 +48,8 @@ if __name__ == '__main__':
     # jt = FSMGenerator.generate_jump_table(o_map={'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4})
     # print(jt)
     #
-    # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
-    #                                        c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c']})
+    FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4},
+                                            c_map={'a': ['b', 'd'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['a', 'c'], 'e': []})
 
     test_horosphere()
 
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     HorosphereGenerator.visualize_horosphere(proc_horo)
     # print("hello world")
 
-    # FSMGenerator.visualize_from_jump_table(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4})
+    FSMGenerator.visualize_from_jump_table(o_map={'b': 0, 'a': 1, 'c': 2, 'd': 3, 'e': 4})
 
     #
     # d = FSMGenerator.generate_fsm_nodes(o_map={'a': 0, 'b': 1, 'c': 2, 'd': 3},
