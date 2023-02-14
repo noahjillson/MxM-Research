@@ -21,12 +21,26 @@ def test_horosphere():
     processed_horosphere = HorosphereGenerator.process_horosphere(partial_horosphere)
     print(indentation + "Returns: " + str(processed_horosphere))
 
-    print("\nTesting \'evaluate_horosphere_edges\' function:\n" + indentation + "Args: horosphere=process_horosphere( " + "generate_horosphere(" + str(depth) + ")" + " )")
-    horosphere_graph = HorosphereGenerator.evaluate_horosphere_edges(processed_horosphere)
-    print(indentation + "Returns: " + str(horosphere_graph))
 
-    print("\nTesting \'visualize_horosphere\' function:\n" + indentation + "Verify results in Matplotlib window")
-    HorosphereGenerator.visualize_horosphere(processed_horosphere)
+    c_map_set = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'c', 'e'}, 'e': {'d', 'a'}}
+    def last_letters_recursion(w):
+        if len(w) == 0:
+            return 'empty word inputted'
+        if len(w) == 1:
+            return set(w)
+        return last_letters_recursion(w[:-1])      \
+                    .intersection(c_map_set[w[-1]])     \
+                    .union(set(w[-1]))
+
+    for name in processed_horosphere:
+        print(name, last_letters_recursion(name))
+
+    # print("\nTesting \'evaluate_horosphere_edges\' function:\n" + indentation + "Args: horosphere=process_horosphere( " + "generate_horosphere(" + str(depth) + ")" + " )")
+    # horosphere_graph = HorosphereGenerator.evaluate_horosphere_edges(processed_horosphere)
+    # print(indentation + "Returns: " + str(horosphere_graph))
+
+    # print("\nTesting \'visualize_horosphere\' function:\n" + indentation + "Verify results in Matplotlib window")
+    # HorosphereGenerator.visualize_horosphere(processed_horosphere)
 
 
 
