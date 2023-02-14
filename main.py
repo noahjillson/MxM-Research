@@ -21,6 +21,15 @@ def test_horosphere():
     processed_horosphere = HorosphereGenerator.process_horosphere(partial_horosphere)
     print(indentation + "Returns: " + str(processed_horosphere))
 
+    print("\nTesting \'last_operations\' function:\n" + indentation + "Args: horosphere=generate_horosphere()")
+    name_ops_pair = []
+    for name in processed_horosphere:
+        name_ops_pair += [VertexName(name).last_operations(), name]
+    print(indentation + "Returns: " + str(name_ops_pair))
+
+    print("\nTesting \'evaluate_horosphere_edges\' function:\n" + indentation + "Args: horosphere=process_horosphere( " + "generate_horosphere(" + str(depth) + ")" + " )")
+    horosphere_graph = HorosphereGenerator.evaluate_horosphere_edges(processed_horosphere)
+    print(indentation + "Returns: " + str(horosphere_graph))
 
     c_map_set = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'c', 'e'}, 'e': {'d', 'a'}}
     def last_letters_recursion(w):
@@ -46,8 +55,10 @@ def test_horosphere():
 
 if __name__ == '__main__':
     # v = VertexName("dcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadcadc")
-    # v = VertexName("acd") # ADC??
-    # v = VertexName("eca")
+    v = VertexName("acabeb")  # ADC??
+    print("LAST OPERATIONS: " + str(v.last_operations()))
+    print(VertexName.last_op("ab", c_map = {'a': ['b', 'e'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['c', 'e'], 'e': ['d', 'a']}))
+    # v = VertexName("eca") """'acabda', {'d', 'a', 'e'}, 'acadbe'"""
     # print(v.name)
     # print(v.sort_name("c"))
     # print(v.is_valid_append("c"))

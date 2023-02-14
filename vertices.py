@@ -15,6 +15,7 @@ class VertexName:
     :var o_map - Dictionary representing the ordering imposed on the group operations. Each operation is a key and its
                  position in the ordering represented as an integer is mapped as the value
     """
+
     def __init__(self, start_name="", c_map=None, o_map=None):
         if c_map is None:
             c_map = {'a': ['b', 'e'], 'b': ['a', 'c'], 'c': ['b', 'd'], 'd': ['c', 'e'], 'e': ['d', 'a']}
@@ -27,18 +28,21 @@ class VertexName:
     """
     :return - str value name of VertexName
     """
+
     def __str__(self):
         return self.name
 
     """
     :return - str value name of VertexName
     """
+
     def __repr__(self):
         return self.__str__()
 
     """
     :return - True if the exact string value of self.name and VertexName.name are equal; False otherwise
     """
+
     def __eq__(self, other):
         if other is VertexName:
             return self.name == other.name
@@ -53,6 +57,7 @@ class VertexName:
     :return - VertexName.name with passed group operation inserted from the right in best sorted with respect to the
               coxter diagram and imposed ordering (c_map and o_map)
     """
+
     def sort_name(self, char: str) -> str:
         if len(char) > 1 or len(char) == 0:
             print("Cannot sort multiple operations at one time")
@@ -92,6 +97,7 @@ class VertexName:
     :return - True if the group operation will be inserted into the name at the right end; False if the group operation
               requires commutations or cancellations to maintain sorted order
     """
+
     def is_valid_append(self, char: str) -> bool:
         if len(char) > 1 or len(char) == 0:
             print("Cannot append multiple operations at one time")
@@ -107,6 +113,7 @@ class VertexName:
     :return Dictionary representation of the truth table where each key is a group operation. The mapped value is
             True if simple appending of the key to the vertex name maintains sorted order; False otherwise.
     """
+
     def generate_truth_table(self) -> dict:
         truth_table = {}
         for char in self.o_map:
@@ -123,6 +130,7 @@ class VertexName:
     :var c_map - Dictionary representing the group's coxter diagram. Each group operation is a key and a list of
                  commutable group operations are mapped as the value.
     """
+
     @staticmethod
     def append(vertex_name, op_string: str, c_map=None):
         if c_map is None:
@@ -147,6 +155,7 @@ class VertexName:
     UNFINISHED; Goal is to remove all immediate and obtainable double letters in a string. Obtainable double letters are
     achievable by commuting letters that commute. 
     """
+
     @staticmethod
     def remove_dupes(vertex_name, c_map=None):
         if c_map is None:
@@ -165,3 +174,38 @@ class VertexName:
                 vertex_name = vertex_name + char
 
         return vertex_name
+
+    """
+    Last letter algorithm. Recursive algo.
+    
+    Start with a shortlex word. Determine what the last possible letters of the word can be if we were to commute
+        letters to get all possible permutations.
+    """
+
+    def last_operations(self):
+        if self.name is None or len(self.name) == 0:
+            return set()
+
+        last_ops = set(self.name[-1])
+        if len(self.name) == 1:
+            return last_ops
+
+        return last_ops.union(self.last_operations_recursive(len(self.name) - 1, set(self.c_map[self.name[-1]])))
+
+    def last_operations_recursive(self, end, possible_last_ops):
+        last_ops = set(self.name[end])
+        if len(self.name[:end]) == 1:
+            return last_ops
+
+        possible_last_ops = possible_last_ops.intersection(self.last_operations_recursive(end-1, set(self.c_map[self.name[end]])))
+        return last_ops.union(possible_last_ops)
+
+    @staticmethod
+    def last_op(name, c_map):
+        if len(name) <= 1:
+            return set(name)
+
+        l = set(name[-1])
+        set(c_map[name[-1]])
+        return set(c_map[name[-1]]).intersection(VertexName.last_op(name[:-1], c_map)).union(l)
+

@@ -18,7 +18,7 @@ def last_letters_recursion(w):
         return set(w)
     return last_letters_recursion(w[:-1])      \
                 .intersection(c_map[w[-1]])     \
-                .union(set(w[-1]))
+                .add(w[-1])
 
 print(last_letters_recursion(check))
 print(last_letters_recursion(check2))
