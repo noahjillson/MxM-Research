@@ -21,14 +21,6 @@ def forbidden_letters(w: str) -> set[str]:
     else:
         # F(wl) = F(l) union (F(w) intersection N_l)
         return forbidden_letters(w[-1]).union(forbidden_letters(w[:-1]).intersection(neighborhood(w[-1])))
-    
-def name_to_char(letter: str) -> str:
-    if letter[0] == 'a':
-        return chr(96 + int(letter[1]))
-    elif letter[0] == 'b':
-        return chr(64 + int(letter[0]))
-    else:
-        return str(int(letter(0)))
 
 torus_o_map = {
                 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
