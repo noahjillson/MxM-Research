@@ -1,3 +1,23 @@
+import lastletter
+
+
+def fsm():
+    E = set()
+    V = set()
+
+    letters = {'a', 'b', 'c', 'd', 'e'}
+    for l in letters:
+        adjacent_letters = c_map[l]
+        intermediary_letters = []
+        for al in adjacent_letters:
+            intermediary_letters.extend(c_map[al].copy().difference(set(l)))
+            print(l + " -" + al + "-> " + al+l)
+        for il in intermediary_letters:
+            print(l + " -" + il + "-> " + il+l)
+            for x in c_map[il].copy().intersection(c_map[l]):
+                print(l + il + " -" + x + "-> " + x+l)
+
+
 """
 Algorithm for Generating a FSM that dictates which letters can be the last letters of a word by reading the letters
 of any given input word in reverse order.
@@ -79,11 +99,12 @@ def generate_fsm_n(c_map):
     return fsm_n
 
 
-c_map = {'a': {'b', 'd'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}, '': {'a', 'b', 'c', 'd', 'e'}}
-print(generate_fsm_n(c_map))
-fsm = generate_fsm_n(c_map)
-Q = fsm
-while len(Q) > 0:
-    tmp = Q.pop()
-    for edge in tmp.edges:
-        print("|" + str(edge.s) + "| ---" + str(edge.label) + "--> |" + str(edge.d) + "|")
+c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}, '': {'a', 'b', 'c', 'd', 'e'}}
+fsm()
+# print(generate_fsm_n(c_map))
+# fsm = generate_fsm_n(c_map)
+# Q = fsm
+# while len(Q) > 0:
+#     tmp = Q.pop()
+#     for edge in tmp.edges:
+#         print("|" + str(edge.s) + "| ---" + str(edge.label) + "--> |" + str(edge.d) + "|")
