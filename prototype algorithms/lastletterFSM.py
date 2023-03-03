@@ -9,7 +9,7 @@ def gen_fsm() -> list:
     edges = []
     frontier = []
 
-    frontier.extend(alphabet)
+    frontier.extend(lst_alphabet)
     while len(frontier) > 0:
         v = frontier.pop(0)
 
@@ -25,8 +25,6 @@ def gen_fsm() -> list:
             frontier.append(u)
             edges.append([v, u])
 
-    print("Vertices: " + str(vertices))
-    print("Edges: " + str(edges))
     return [vertices, edges]
 
 
@@ -46,6 +44,7 @@ def fsm():
 
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
+pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 torus_c_map = {
     'a': {'b', 'g', 'D', 'E', '4', '5'}, 'b': {'a', 'c', 'E', 'F', '5', '6'},
     'c': {'b', 'd', 'F', 'G', '6', '7'}, 'd': {'c', 'e', 'A', 'G', '1', '7'},
@@ -62,8 +61,19 @@ torus_c_map = {
 }
 torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6',
                   '7'}
+torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
+                      {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-c_map = torus_c_map
-alphabet = torus_alphabet
-# fsm()
-gen_fsm()
+c_map = torus_c_map  # pentagonal_c_map
+alphabet = torus_alphabet  # pentagonal_alphabet
+lst_alphabet = torus_lst_alphabet  # pentagonal_lst_alphabet
+FSM = gen_fsm()
+print("Vertices: " + str(FSM[0]))
+print("Edges: " + str(FSM[1]))
+print(str(len(FSM[0])) + " Vertices")
+print(str(len(FSM[1])) + " Edges")
+
+# s = ""
+# for l in alphabet:
+#     s = s + ", {'" + l + "'}"
+# print(s)
