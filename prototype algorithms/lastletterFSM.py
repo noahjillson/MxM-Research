@@ -1,4 +1,4 @@
-def gen_fsm() -> list:
+def generate_fsm() -> list:
     """
     Generate the finite state machine of all possible last letters. Edges represent writing a letter while vertices
     represent the set of possible last letters given the edges follower / letters written.
@@ -28,20 +28,6 @@ def gen_fsm() -> list:
     return [vertices, edges]
 
 
-def fsm():
-    letters = alphabet
-    for l in letters:
-        adjacent_letters = c_map[l]
-        intermediary_letters = []
-        for al in adjacent_letters:
-            intermediary_letters.extend(c_map[al].copy().difference(set(l)))
-            print(l + " -" + al + "-> " + al + l)
-        for il in intermediary_letters:
-            print(l + " -" + il + "-> " + il + l)
-            for x in c_map[il].copy().intersection(c_map[l]):
-                print(l + il + " -" + x + "-> " + x + l)
-
-
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
@@ -67,13 +53,9 @@ torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'
 c_map = torus_c_map  # pentagonal_c_map
 alphabet = torus_alphabet  # pentagonal_alphabet
 lst_alphabet = torus_lst_alphabet  # pentagonal_lst_alphabet
-FSM = gen_fsm()
+
+FSM = generate_fsm()
 print("Vertices: " + str(FSM[0]))
 print("Edges: " + str(FSM[1]))
 print(str(len(FSM[0])) + " Vertices")
 print(str(len(FSM[1])) + " Edges")
-
-# s = ""
-# for l in alphabet:
-#     s = s + ", {'" + l + "'}"
-# print(s)
