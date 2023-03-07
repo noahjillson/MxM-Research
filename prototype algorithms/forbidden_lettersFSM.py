@@ -92,7 +92,7 @@ def generate_fsm(alphabet=torus_alphabet, c_map=torus_c_map) -> list:
     return [vertices, edges]
 
 def format_directed_edge(edge: Tuple[set[str], set[str], str]) -> Tuple[str, str, str]:
-    """Make a directed edge (of length 3) to a set of 3 strings"""
+    """Make a directed edge (of length 3) to a tuple of 3 strings"""
     hashable_edge = [None] * 3
 
     hashable_edge[0] = ''.join(sorted(list(edge[0])))
