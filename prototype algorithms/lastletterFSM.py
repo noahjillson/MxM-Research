@@ -1,3 +1,13 @@
+import colorsys
+
+import matplotlib.colors
+import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
+import numpy as np
+import random
+
+
 def generate_fsm() -> list:
     """
     Generate the finite state machine of all possible last letters. Edges represent writing a letter while vertices
@@ -50,12 +60,135 @@ torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F
 torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-c_map = torus_c_map  # pentagonal_c_map
-alphabet = torus_alphabet  # pentagonal_alphabet
-lst_alphabet = torus_lst_alphabet  # pentagonal_lst_alphabet
+# c_map = torus_c_map  # pentagonal_c_map
+# alphabet = torus_alphabet  # pentagonal_alphabet
+# lst_alphabet = torus_lst_alphabet  # pentagonal_lst_alphabet
+
+c_map = pentagonal_c_map
+alphabet = pentagonal_alphabet
+lst_alphabet = pentagonal_lst_alphabet
 
 FSM = generate_fsm()
 print("Vertices: " + str(FSM[0]))
 print("Edges: " + str(FSM[1]))
 print(str(len(FSM[0])) + " Vertices")
 print(str(len(FSM[1])) + " Edges")
+
+# Networkx Visualization Script
+hashable_edges = []
+for edge in FSM[1]:
+    ordered_edge = [[], []]
+    hashable_edge = ["", ""]
+
+    for contents in edge[0]:
+        ordered_edge[0].append(contents)
+    for contents in edge[1]:
+        ordered_edge[1].append(contents)
+
+    ordered_edge[0].sort()
+    ordered_edge[1].sort()
+
+    for contents in ordered_edge[0]:
+        hashable_edge[0] = hashable_edge[0] + contents
+    for contents in ordered_edge[1]:
+        hashable_edge[1] = hashable_edge[1] + contents
+
+    hashable_edges.append(hashable_edge)
+
+print(hashable_edges)
+G = nx.DiGraph()
+G.add_edges_from(hashable_edges)
+print(G.number_of_nodes())
+# colors = np.random.rand(126, 4)
+pos = nx.shell_layout(G, dim=2)
+
+colors = []
+for i in range(127):
+    hue = i / 127.0
+    red, green, blue = colorsys.hsv_to_rgb(hue, 1, 1)
+    alpha = random.random()
+    colors.append((red, green, blue, alpha))
+
+node_colors = []
+for node in G:
+    if len(node) == 3:
+        node_colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
+    elif len(node) == 2:
+        node_colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
+    elif len(node) == 1:
+        node_colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
+    elif len(node) == 0:
+        node_colors.append(matplotlib.colors.to_rgba("#b0b0b0", 1))
+
+edge_colors = []
+alph1 = 0.5
+alph2 = 0.5
+alph3 = 0.5
+for edge in G.edges:
+    s = edge[0]
+    e = edge[1]
+
+    if len(s) == 1 and len(e) == 1:
+        edge_colors.append(matplotlib.colors.to_rgba("#00a76c", alph1))  # Blue
+    if len(s) == 1 and len(e) == 2:
+        edge_colors.append(matplotlib.colors.to_rgba("#00c6f8", alph1))  # Turquoise
+    if len(s) == 1 and len(e) == 3:
+        edge_colors.append(matplotlib.colors.to_rgba("#b80058", alph1))  # Maroon
+    if len(s) == 2 and len(e) == 1:
+        edge_colors.append(matplotlib.colors.to_rgba("#ebac23", alph2))  # Orange
+    if len(s) == 2 and len(e) == 2:
+        edge_colors.append(matplotlib.colors.to_rgba("#3A3CA6", alph2))  # Blue
+    if len(s) == 2 and len(e) == 3:
+        edge_colors.append(matplotlib.colors.to_rgba("#d163e6", alph2))  # Lavender
+    if len(s) == 3 and len(e) == 1:
+        edge_colors.append(matplotlib.colors.to_rgba("#c22f4e", alph3))  # Red
+    if len(s) == 3 and len(e) == 2:
+        edge_colors.append(matplotlib.colors.to_rgba("#00a76c", alph3))  # Jade
+    if len(s) == 3 and len(e) == 3:
+        edge_colors.append(matplotlib.colors.to_rgba("#b24502", alph3))  # Brown
+
+
+print(len(colors))
+options = {
+    "node_color": node_colors,
+    "edge_color": edge_colors,
+    # "width": 4,
+    "font_size": 8,
+    "edge_cmap": plt.cm.Blues,
+    "with_labels": True,
+    "node_size": 220,
+    "font_color": "black"
+}
+
+# colors = []
+# for node in G:
+#     if len(node) == 3:
+#         colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
+#     elif len(node) == 2:
+#         colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
+#     elif len(node) == 1:
+#         colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
+#     elif len(node) == 0:
+#         colors.append(matplotlib.colors.to_rgba("#b0b0b0", 1))
+
+
+x = [pos[n][0] for n in G.nodes()]
+y = [pos[n][1] for n in G.nodes()]
+#z = [pos[n][2] for n in G.nodes()]
+
+fig = plt.figure()
+# ax = fig.add_subplot(111, projection='3d')
+# ax.scatter(x, y, z, color='red')
+# edges = [(u, v) for (u, v) in G.edges()]
+# for (u, v) in edges:
+#     ax.plot([pos[u][0], pos[v][0]], [pos[u][1], pos[v][1]], [pos[u][2], pos[v][2]], color='black', alpha=.2)
+# nx.draw_networkx_nodes(G, pos, edgecolors="black")
+nx.draw(G, pos, **options)
+#plt.legend(["1—>1", "1—>2", "1—>3", "2—>1", "2—>2", "2—>3", "3—>1", "3—>2", "3—>3"])
+
+# one = mlines.Line2D([], [], color='#00a76c', marker='>', ls='', label='1—>1')
+# two = mlines.Line2D([], [], color='blue', marker='>', ls='', label='9')
+# # etc etc
+# plt.legend(handles=[one, two])
+
+plt.show()
