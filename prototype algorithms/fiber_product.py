@@ -33,4 +33,4 @@ def test_fiber_product():
     nx.draw(M_x_N, with_labels=True, font_size=15, arrowsize=15, node_size = 1000)
     plt.show()
 
-test_fiber_product()
+# test_fiber_product()
