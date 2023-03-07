@@ -43,6 +43,6 @@ torus_c_map = {
                 '7': {'c', 'd', 'C', 'D', '1', '6'}
 }
 
-test_word = '7E' #B5 A6
+test_word = '1' #B5 A6
 
 print(forbidden_letters(test_word).union(test_word[-1])) # union the last letter
