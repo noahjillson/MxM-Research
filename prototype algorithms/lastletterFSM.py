@@ -1,0 +1,193 @@
+import colorsys
+
+import matplotlib.colors
+import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
+import numpy as np
+import random
+from typing import List, Tuple
+
+pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
+pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
+pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
+torus_c_map = {
+    'a': {'b', 'g', 'D', 'E', '4', '5'}, 'b': {'a', 'c', 'E', 'F', '5', '6'},
+    'c': {'b', 'd', 'F', 'G', '6', '7'}, 'd': {'c', 'e', 'A', 'G', '1', '7'},
+    'e': {'d', 'f', 'A', 'B', '1', '2'}, 'f': {'e', 'g', 'B', 'C', '2', '3'},
+    'g': {'a', 'f', 'C', 'D', '3', '4'},
+    'A': {'d', 'e', 'B', 'G', '4', '5'}, 'B': {'e', 'f', 'A', 'C', '5', '6'},
+    'C': {'f', 'g', 'B', 'D', '6', '7'}, 'D': {'a', 'g', 'C', 'E', '1', '7'},
+    'E': {'a', 'b', 'D', 'F', '1', '2'}, 'F': {'b', 'c', 'E', 'G', '2', '3'},
+    'G': {'c', 'd', 'A', 'F', '3', '4'},
+    '1': {'d', 'e', 'D', 'E', '2', '7'}, '2': {'e', 'f', 'E', 'F', '1', '3'},
+    '3': {'f', 'g', 'F', 'G', '2', '4'}, '4': {'a', 'g', 'A', 'G', '3', '5'},
+    '5': {'a', 'b', 'A', 'B', '4', '6'}, '6': {'b', 'c', 'B', 'C', '5', '7'},
+    '7': {'c', 'd', 'C', 'D', '1', '6'}
+}
+torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6',
+                  '7'}
+torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
+                      {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
+
+def generate_fsm(alphabet=torus_alphabet, c_map=torus_c_map) -> list:
+    """
+    Generate the finite state machine of all possible last letters. Edges represent writing a letter while vertices
+    represent the set of possible last letters given the edges follower / letters written.
+
+    :return: list of lists; The first entry is the list of vertices; The second is the list of edges.
+    """
+    vertices = []
+    edges = []
+    frontier = []
+
+    # Initialize the frontier
+    frontier.extend([set(l) for l in alphabet])
+
+    while len(frontier) > 0:
+        v = frontier.pop(0)
+
+        # We have already considered v and all its outgoing edges, we can skip its consideration
+        if v in vertices:
+            continue
+        vertices.append(v)
+
+        # Record outgoing edges from v, this is guaranteed to be unique by above if-statement
+        # Add the destination vertex, u, to our frontier to ensure all vertices are reached
+        for e in alphabet.copy().difference(v):
+            u = set(e).union(v.intersection(c_map[e]))
+            frontier.append(u)
+            edges.append([v, u, e])
+
+    return [vertices, edges]
+
+def format_directed_edge(edge: Tuple[set[str], set[str], str]) -> Tuple[str, str, str]:
+    """Make a directed edge (of length 3) to a set of 3 strings"""
+    hashable_edge = [None] * 3
+
+    hashable_edge[0] = ''.join(sorted(list(edge[0])))
+    hashable_edge[1] = ''.join(sorted(list(edge[1])))
+
+    return (hashable_edge[0], hashable_edge[1], edge[2])
+
+def display_fsm(G: nx.DiGraph):
+    colors = np.random.rand(126, 4)
+    pos = nx.circular_layout(G, dim=2)
+
+    colors = []
+    for i in range(127):
+        hue = i / 127.0
+        red, green, blue = colorsys.hsv_to_rgb(hue, 1, 1)
+        alpha = random.random()
+        colors.append((red, green, blue, alpha))
+
+    node_colors = []
+    for node in G:
+        if len(node) == 3:
+            node_colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
+        elif len(node) == 2:
+            node_colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
+        elif len(node) == 1:
+            node_colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
+        elif node == '':
+            node_colors.append(matplotlib.colors.to_rgba("#000000", 1))
+
+    edge_colors = []
+    alph1 = 0.5
+    alph2 = 0.5
+    alph3 = 0.5
+    for edge in G.edges:
+        s = edge[0]
+        e = edge[1]
+
+        if len(s) == 1 and len(e) == 1:
+            edge_colors.append(matplotlib.colors.to_rgba("#00a76c", alph1))  # Blue
+        if len(s) == 1 and len(e) == 2:
+            edge_colors.append(matplotlib.colors.to_rgba("#00c6f8", alph1))  # Turquoise
+        if len(s) == 1 and len(e) == 3:
+            edge_colors.append(matplotlib.colors.to_rgba("#b80058", alph1))  # Maroon
+        if len(s) == 2 and len(e) == 1:
+            edge_colors.append(matplotlib.colors.to_rgba("#ebac23", alph2))  # Orange
+        if len(s) == 2 and len(e) == 2:
+            edge_colors.append(matplotlib.colors.to_rgba("#3A3CA6", alph2))  # Blue
+        if len(s) == 2 and len(e) == 3:
+            edge_colors.append(matplotlib.colors.to_rgba("#d163e6", alph2))  # Lavender
+        if len(s) == 3 and len(e) == 1:
+            edge_colors.append(matplotlib.colors.to_rgba("#c22f4e", alph3))  # Red
+        if len(s) == 3 and len(e) == 2:
+            edge_colors.append(matplotlib.colors.to_rgba("#00a76c", alph3))  # Jade
+        if len(s) == 3 and len(e) == 3:
+            edge_colors.append(matplotlib.colors.to_rgba("#b24502", alph3))  # Brown
+
+
+    # print(len(colors))
+    options = {
+        "node_color": node_colors,
+        "edge_color": edge_colors,
+        # "width": 4,
+        "font_size": 8,
+        "edge_cmap": plt.cm.Blues,
+        "with_labels": True,
+        "node_size": 250,
+        "font_color": "black"
+    }
+
+    colors = []
+    for node in G:
+        if len(node) == 3:
+            colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
+        elif len(node) == 2:
+            colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
+        elif len(node) == 1:
+            colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
+        elif len(node) == 0:
+            colors.append(matplotlib.colors.to_rgba("#b0b0b0", 1))
+
+
+    # x = [pos[n][0] for n in G.nodes()]
+    # y = [pos[n][1] for n in G.nodes()]
+    #z = [pos[n][2] for n in G.nodes()]
+
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # ax.scatter(x, y, z, color='red')
+    # edges = [(u, v) for (u, v) in G.edges()]
+    # for (u, v) in edges:
+    #     ax.plot([pos[u][0], pos[v][0]], [pos[u][1], pos[v][1]], [pos[u][2], pos[v][2]], color='black', alpha=.2)
+    #print(pos)
+    # nx.draw_networkx_nodes(G, pos, edgecolors="black")
+    pos[''] = [0.051, 0]
+    nx.draw(G, pos, **options)
+    # nx.draw_networkx_edge_labels(G, pos, edge_labels=hashable_edges_dictionary)
+    #plt.legend(["1—>1", "1—>2", "1—>3", "2—>1", "2—>2", "2—>3", "3—>1", "3—>2", "3—>3"])
+
+    # one = mlines.Line2D([], [], color='#00a76c', marker='>', ls='', label='1—>1')
+    # two = mlines.Line2D([], [], color='blue', marker='>', ls='', label='9')
+    # # etc etc
+    # plt.legend(handles=[one, two])
+
+    plt.show()
+
+FSM = generate_fsm()
+print("Vertices: " + str(FSM[0]))
+print("Edges: " + str(FSM[1]))
+print(str(len(FSM[0])) + " Vertices")
+print(str(len(FSM[1])) + " Edges")
+
+hashable_edges = []
+for edge in FSM[1]:
+    hashable_edges.append(format_directed_edge(edge))
+
+# add length 1 edges
+for node in FSM[0]:
+    if len(node) == 1:
+        hashable_edges.append(('', list(node)[0], list(node)[0]))
+
+hashable_edges = {
+    (ele[0], ele[1]): ele[2] for ele in hashable_edges
+}
+
+G = nx.DiGraph()
+G.add_edges_from(hashable_edges)
+print(G.number_of_nodes())
+display_fsm(G)
