@@ -1,6 +1,3 @@
-import colorsys
-
-import matplotlib.colors
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.lines as mlines

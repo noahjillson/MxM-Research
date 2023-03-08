@@ -1,6 +1,10 @@
 import last_letter_FSM
 import forbidden_letters_FSM
-import fiber_product
+import networkx as nx
+from itertools import product
+
+def cartesian_product(tup1, tup2): 
+    return list(product(tup1, tup2))
 
 # Default values
 # pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
@@ -26,8 +30,8 @@ import fiber_product
 #     '5': {'a', 'b', 'A', 'B', '4', '6'}, '6': {'b', 'c', 'B', 'C', '5', '7'},
 #     '7': {'c', 'd', 'C', 'D', '1', '6'}
 # }
-# torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6',
-#                   '7'}
+torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6',
+                  '7'}
 # torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
 #                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
@@ -58,7 +62,7 @@ FSM_N = last_letter_FSM.generate_fsm_last_letter()
 
 hashable_edges_N = []
 for edge in FSM_N[1]:
-    hashable_edges_N.append(last_letter_FSM.generate_fsm_last_letter(edge))
+    hashable_edges_N.append(last_letter_FSM.format_directed_edge(edge))
 
 # add length 1 edges
 for node in FSM_N[0]:
@@ -70,3 +74,20 @@ labeled_edges_N = {
 }
 
 print(labeled_edges_M, labeled_edges_N)
+
+# TODO: Take a cartesian product of the torus alphabet with itself as the nodes
+nodes = cartesian_product(torus_alphabet, torus_alphabet)
+print(nodes)
+
+# TODO: Join nodes together if they have the same label and edges exist in both
+def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
+    final_labeled_edges = {}
+    for e1 in labeled_edges_1:
+        for e2 in labeled_edges_2:
+            if labeled_edges_1[e1] == labeled_edges_2[e2]:
+                final_labeled_edges[((e1[0], e2[0]), (e1[1], e2[1]))] = labeled_edges_1[e1]
+    G = nx.DiGraph()
+    G.add_edges_from(final_labeled_edges)
+    return G
+
+G = fiber_product(labeled_edges_M, labeled_edges_N)
