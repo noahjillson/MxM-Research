@@ -91,3 +91,4 @@ def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     return G
 
 G = fiber_product(labeled_edges_M, labeled_edges_N)
+nx.write_adjlist(G, "test.adjlist")
