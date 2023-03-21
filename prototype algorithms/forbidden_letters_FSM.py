@@ -11,7 +11,7 @@ pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 
 torus_o_map = {
-                'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
+                'a': 0, 'b': 2, 'c': 1, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
                 'A': 7, 'B': 8, 'C': 9, 'D': 10, 'E': 11, 'F': 12, 'G': 13,
                 '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
 }
@@ -51,10 +51,10 @@ def forbidden_letters(w: str) -> set[str]:
 
     if len(w) == 1:
         # If the word length is 1, then the last letters are just the adjacent letters than come before that letter
-        return set(filter(lambda x: torus_o_map[x] <= torus_o_map[w], neighborhood(w)))
+        return set(filter(lambda x: torus_o_map[x] > torus_o_map[w], neighborhood(w)))
     else:
         # F(wl) = F(l) union (F(w) intersection N_l)
-        return forbidden_letters(w[-1]).union(forbidden_letters(w[:-1]).intersection(neighborhood(w[-1])))
+        return torus_alphabet - forbidden_letters(w[-1]).union(forbidden_letters(w[:-1]).intersection(neighborhood(w[-1])))
 
 def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map) -> list:
     """

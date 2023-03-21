@@ -91,4 +91,35 @@ def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     return G
 
 G = fiber_product(labeled_edges_M, labeled_edges_N)
-nx.write_adjlist(G, "test.adjlist")
+# pruned_G = nx.DiGraph
+# pruned_G.add_edges_from(list(nx.bfs_edges(G, '')))
+# print(pruned_G)
+
+print(G)
+# nx.write_edgelist(G, "test.edgelist")
+# for edge in G.edges():
+#     print(edge)
+#     print(labeled_edges_M[(edge[0][0], edge[1][0])], labeled_edges_N[(edge[0][1], edge[1][1])])
+
+# def save_graph(graph,file_name):
+# #initialze Figure
+#     plt.figure(num=None, figsize=(20, 20), dpi=80)
+#     plt.axis('off')
+#     fig = plt.figure(1)
+#     pos = nx.spring_layout(graph)
+#     nx.draw_networkx_nodes(graph,pos)
+#     nx.draw_networkx_edges(graph,pos)
+#     nx.draw_networkx_labels(graph,pos)
+
+#     cut = 1.00
+#     xmax = cut * max(xx for xx, yy in pos.values())
+#     ymax = cut * max(yy for xx, yy in pos.values())
+#     plt.xlim(0, xmax)
+#     plt.ylim(0, ymax)
+
+#     plt.savefig(file_name,bbox_inches="tight")
+#     pylab.close()
+#     del fig
+
+# #Assuming that the graph g has nodes and edges entered
+# save_graph(G,"my_graph.pdf")
