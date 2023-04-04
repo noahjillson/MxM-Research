@@ -30,14 +30,13 @@ torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F
 torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-def generate_fsm_last_letter(alphabet=None, c_map=torus_c_map) -> list:
+def generate_fsm_last_letter(alphabet=torus_alphabet, c_map=torus_c_map) -> list:
     """
     Generate the finite state machine of all possible last letters. Edges represent writing a letter while vertices
     represent the set of possible last letters given the edges follower / letters written.
 
     :return: list of lists; The first entry is the list of vertices; The second is the list of edges.
     """
-    alphabet = torus_alphabet
     vertices = []
     edges = []
     frontier = []

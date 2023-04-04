@@ -2,14 +2,16 @@ import last_letter_FSM
 import forbidden_letters_FSM
 import networkx as nx
 from itertools import product
+import matplotlib.pyplot as plt
 
 def cartesian_product(tup1, tup2): 
     return list(product(tup1, tup2))
 
 # Default values
-# pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
-# pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
-# pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
+pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
+pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
+pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
+pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 
 # torus_o_map = {
 #                 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
@@ -30,16 +32,12 @@ def cartesian_product(tup1, tup2):
 #     '5': {'a', 'b', 'A', 'B', '4', '6'}, '6': {'b', 'c', 'B', 'C', '5', '7'},
 #     '7': {'c', 'd', 'C', 'D', '1', '6'}
 # }
-torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6',
-                  '7'}
+# torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '1', '2', '3', '4', '5', '6',
+#                   '7'}
 # torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
 #                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-FSM_M = forbidden_letters_FSM.generate_fsm_forbidden_letters()
-# print("Vertices: " + str(FSM[0]))
-# print("Edges: " + str(FSM[1]))
-# print(str(len(FSM[0])) + " Vertices")
-# print(str(len(FSM[1])) + " Edges")
+FSM_M = forbidden_letters_FSM.generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map, o_map=pentagonal_o_map)
 
 hashable_edges_M = []
 for edge in FSM_M[1]:
@@ -54,7 +52,7 @@ labeled_edges_M = {
     (ele[0], ele[1]): ele[2] for ele in hashable_edges_M
 }
 
-FSM_N = last_letter_FSM.generate_fsm_last_letter()
+FSM_N = last_letter_FSM.generate_fsm_last_letter(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map)
 # print("Vertices: " + str(FSM[0]))
 # print("Edges: " + str(FSM[1]))
 # print(str(len(FSM[0])) + " Vertices")
@@ -73,13 +71,12 @@ labeled_edges_N = {
     (ele[0], ele[1]): ele[2] for ele in hashable_edges_N
 }
 
-print(labeled_edges_M, labeled_edges_N)
+# print('labeled_edges_M', labeled_edges_M,'labeled_edges_N' ,labeled_edges_N, sep='\n')
 
-# TODO: Take a cartesian product of the torus alphabet with itself as the nodes
-nodes = cartesian_product(torus_alphabet, torus_alphabet)
-print(nodes)
+# Take a cartesian product of the torus alphabet with itself as the nodes
+nodes = cartesian_product(pentagonal_alphabet, pentagonal_alphabet)
 
-# TODO: Join nodes together if they have the same label and edges exist in both
+# Join nodes together if they have the same label and edges exist in both
 def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     final_labeled_edges = {}
     for e1 in labeled_edges_1:
@@ -91,3 +88,34 @@ def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     return G
 
 G = fiber_product(labeled_edges_M, labeled_edges_N)
+
+nx.draw(G)
+# print('Final fiber product: \n', G.edges)
+plt.show()
+# nx.write_edgelist(G, "test.edgelist")
+# for edge in G.edges():
+#     print(edge)
+#     print(labeled_edges_M[(edge[0][0], edge[1][0])], labeled_edges_N[(edge[0][1], edge[1][1])])
+
+# def save_graph(graph,file_name):
+# #initialze Figure
+#     plt.figure(num=None, figsize=(20, 20), dpi=80)
+#     plt.axis('off')
+#     fig = plt.figure(1)
+#     pos = nx.spring_layout(graph)
+#     nx.draw_networkx_nodes(graph,pos)
+#     nx.draw_networkx_edges(graph,pos)
+#     nx.draw_networkx_labels(graph,pos)
+
+#     cut = 1.00
+#     xmax = cut * max(xx for xx, yy in pos.values())
+#     ymax = cut * max(yy for xx, yy in pos.values())
+#     plt.xlim(0, xmax)
+#     plt.ylim(0, ymax)
+
+#     plt.savefig(file_name,bbox_inches="tight")
+#     pylab.close()
+#     del fig
+
+# #Assuming that the graph g has nodes and edges entered
+# save_graph(G,"my_graph.pdf")

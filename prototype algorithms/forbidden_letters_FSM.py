@@ -11,7 +11,7 @@ pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 
 torus_o_map = {
-                'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
+                'a': 0, 'b': 2, 'c': 1, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
                 'A': 7, 'B': 8, 'C': 9, 'D': 10, 'E': 11, 'F': 12, 'G': 13,
                 '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
 }
@@ -34,13 +34,13 @@ torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F
 torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-def neighborhood(p: int) -> set[str]:
+def neighborhood(p: int, c_map=torus_c_map) -> set[str]:
     """Return the 1.5 radius neighborhood around point p (just p and all its adjacent vertices)"""
-    nbhd = set(torus_c_map[p])
+    nbhd = set(c_map[p])
     # nbhd.append(p)
     return nbhd
 
-def forbidden_letters(w: str) -> set[str]:
+def forbidden_letters(w: str, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> set[str]:
     """
     Find the forbidden letters for a word w.s
 
@@ -51,12 +51,14 @@ def forbidden_letters(w: str) -> set[str]:
 
     if len(w) == 1:
         # If the word length is 1, then the last letters are just the adjacent letters than come before that letter
-        return set(filter(lambda x: torus_o_map[x] <= torus_o_map[w], neighborhood(w)))
+        return set(filter(lambda x: o_map[x] > o_map[w], neighborhood(w, c_map)))
     else:
         # F(wl) = F(l) union (F(w) intersection N_l)
-        return forbidden_letters(w[-1]).union(forbidden_letters(w[:-1]).intersection(neighborhood(w[-1])))
+        return alphabet - forbidden_letters(w[-1]) \
+                    .union(forbidden_letters(w[:-1], c_map=c_map, o_map=o_map) \
+                    .intersection(neighborhood(w[-1], c_map=c_map)))
 
-def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map) -> list:
+def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> list:
     """
     Generate the finite state machine of all possible last letters. Edges represent writing a letter while vertices
     represent the set of possible last letters given the edges follower / letters written.
@@ -67,8 +69,8 @@ def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map) -
     edges = []
     frontier = []
 
-    for l in torus_alphabet:
-        frontier.append(forbidden_letters(l))
+    for l in alphabet:
+        frontier.append(forbidden_letters(l, alphabet=alphabet, c_map=c_map, o_map=o_map))
 
     while len(frontier) > 0:
         v = frontier.pop(0)
