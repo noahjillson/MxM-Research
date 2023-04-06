@@ -1,6 +1,7 @@
 import last_letter_FSM
-import forbidden_letters_FSM
+import legal_next_letters_FSM
 import networkx as nx
+# import scipy
 from itertools import product
 import matplotlib.pyplot as plt
 
@@ -37,11 +38,11 @@ pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 # torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
 #                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-FSM_M = forbidden_letters_FSM.generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map, o_map=pentagonal_o_map)
+FSM_M = legal_next_letters_FSM.generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map, o_map=pentagonal_o_map)
 
 hashable_edges_M = []
 for edge in FSM_M[1]:
-    hashable_edges_M.append(forbidden_letters_FSM.format_directed_edge(edge))
+    hashable_edges_M.append(legal_next_letters_FSM.format_directed_edge(edge))
 
 # add length 1 edges
 for node in FSM_M[0]:
@@ -85,11 +86,15 @@ def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
                 final_labeled_edges[((e1[0], e2[0]), (e1[1], e2[1]))] = labeled_edges_1[e1]
     G = nx.DiGraph()
     G.add_edges_from(final_labeled_edges)
-    return G
+    return (G, final_labeled_edges)
 
-G = fiber_product(labeled_edges_M, labeled_edges_N)
+G, final_edge_labels = fiber_product(labeled_edges_M, labeled_edges_N)
 
-nx.draw(G)
+options = {"node_size": 50, "with_labels": True}
+
+pos = nx.circular_layout(G)
+nx.draw_networkx_edge_labels(G, pos, final_edge_labels)
+nx.draw(G, pos, **options)
 # print('Final fiber product: \n', G.edges)
 plt.show()
 # nx.write_edgelist(G, "test.edgelist")
