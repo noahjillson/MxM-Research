@@ -34,13 +34,15 @@ torus_alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'A', 'B', 'C', 'D', 'E', 'F
 torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-def neighborhood(p: int, c_map=torus_c_map) -> set[str]:
+
+def neighborhood(p: str, c_map=torus_c_map) -> set[str]:
     """Return the 1.5 radius neighborhood around point p (just p and all its adjacent vertices)"""
-    nbhd = set(c_map[p])
+    nbhd = set(c_map[p]).union(set(p))
     # nbhd.append(p)
     return nbhd
 
-def forbidden_letters(w: str, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> set[str]:
+
+def legal_next_letters(w: str, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> set[str]:
     """
     Find the forbidden letters for a word w.s
 
@@ -51,12 +53,12 @@ def forbidden_letters(w: str, alphabet=torus_alphabet, c_map=torus_c_map, o_map=
 
     if len(w) == 1:
         # If the word length is 1, then the last letters are just the adjacent letters than come before that letter
-        return set(filter(lambda x: o_map[x] > o_map[w], neighborhood(w, c_map)))
+        return set(filter(lambda x: o_map[x] >= o_map[w], neighborhood(w, c_map=c_map)))
     else:
         # F(wl) = F(l) union (F(w) intersection N_l)
-        return alphabet - forbidden_letters(w[-1]) \
-                    .union(forbidden_letters(w[:-1], c_map=c_map, o_map=o_map) \
-                    .intersection(neighborhood(w[-1], c_map=c_map)))
+        return alphabet - legal_next_letters(w[-1], alphabet=alphabet, c_map=c_map, o_map=o_map) \
+                    .union(legal_next_letters(w[:-1], alphabet=alphabet, c_map=c_map, o_map=o_map) \
+                           .intersection(neighborhood(w[-1], c_map=c_map)))
 
 def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> list:
     """
@@ -70,7 +72,7 @@ def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map, o
     frontier = []
 
     for l in alphabet:
-        frontier.append(forbidden_letters(l, alphabet=alphabet, c_map=c_map, o_map=o_map))
+        frontier.append(legal_next_letters(l, alphabet=alphabet, c_map=c_map, o_map=o_map))
 
     while len(frontier) > 0:
         v = frontier.pop(0)
@@ -86,7 +88,7 @@ def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map, o
             u = set(e).union(c_map[e].intersection(v))
             frontier.append(u)
             edges.append((v, u, e))
-            
+
 
     return [vertices, edges]
 
@@ -197,35 +199,44 @@ def display_fsm(G: nx.DiGraph):
 
     plt.show()
 
-# c_map = torus_c_map  # pentagonal_c_map
-# alphabet = torus_alphabet  # pentagonal_alphabet
-# lst_alphabet = torus_lst_alphabet  # pentagonal_lst_alphabet
+c_map = torus_c_map  # pentagonal_c_map
+alphabet = torus_alphabet  # pentagonal_alphabet
+lst_alphabet = torus_lst_alphabet  # pentagonal_lst_alphabet
 
-# FSM = generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map)
+FSM = generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map)
 # # print("Vertices: " + str(FSM[0]))
 # # print("Edges: " + str(FSM[1]))
 # print(str(len(FSM[0])) + " Vertices")
 # print(str(len(FSM[1])) + " Edges")
 
-# hashable_edges = []
-# for edge in FSM[1]:
-#     hashable_edges.append(format_directed_edge(edge))
+hashable_edges = []
+for edge in FSM[1]:
+    hashable_edges.append(format_directed_edge(edge))
 
 # # add length 1 edges
-# for node in FSM[0]:
-#     if len(node) == 1:
-#         hashable_edges.append(('', list(node)[0], list(node)[0]))
+for node in FSM[0]:
+    if len(node) == 1:
+        hashable_edges.append(('', list(node)[0], list(node)[0]))
 
-# labeled_edges = {
-#     (ele[0], ele[1]): ele[2] for ele in hashable_edges
-# }
+labeled_edges = {
+    (ele[0], ele[1]): ele[2] for ele in hashable_edges
+}
 
-# print(labeled_edges)
+print(labeled_edges)
 
-# G = nx.DiGraph()
-# nx.set_edge_attributes(G, labeled_edges)
-# G.add_edges_from(labeled_edges)
-# print(G.number_of_nodes())
+G = nx.DiGraph()
+nx.set_edge_attributes(G, labeled_edges)
+G.add_edges_from(labeled_edges)
+print(G.number_of_nodes())
+print(G.adj)
 
-# display_fsm(G)
+display_fsm(G)
+pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
+print("forbidden letters: " + str(legal_next_letters('ac', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map)))
+print(legal_next_letters('c', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map))
+#print(neighborhood('b', pentagonal_c_map))
+# AAAAAAHHHH, The lambda function and filter seems to be giving the wrong answer here. clearly 'b' has forbidden letters
+# The forbidden letters of a single letter should be the letters that commute with your letter 'l' and come before it
+# as well as the letter itself as we cannot write 'l' twice
+#print(set(filter(lambda x: pentagonal_o_map[x] < pentagonal_o_map['b'], neighborhood('b', c_map=pentagonal_c_map))))
 
