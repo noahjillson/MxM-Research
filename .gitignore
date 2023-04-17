@@ -1,5 +1,5 @@
 #Ignore Pycharm files
 .idea
 __pycache__
-__pycache__/*
+"prototype algorithms/__pycache__"
 .DS_STORE
