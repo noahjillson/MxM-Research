@@ -42,10 +42,9 @@ def neighborhood(p: str, c_map=torus_c_map) -> set[str]:
     return nbhd
 
 def legal_next_letters(w: str, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> set[str]:
-    print("LNL TESTS:")
-    print(forbidden_letters(w=w, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map))
-    print(alphabet.copy() - forbidden_letters(w=w, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map))
-    return alphabet.copy().difference(forbidden_letters(w=w, alphabet=alphabet, c_map=c_map, o_map=o_map))
+    # MASSIVE ERROR HERE previous line was
+    return alphabet - forbidden_letters(w=w, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map)
+    #return alphabet - forbidden_letters(w=w, alphabet=alphabet, c_map=c_map, o_map=o_map)
 
 
 def forbidden_letters(w: str, alphabet=torus_alphabet, c_map=torus_c_map, o_map=torus_o_map) -> set[str]:
@@ -80,7 +79,7 @@ def generate_fsm_forbidden_letters(alphabet=torus_alphabet, c_map=torus_c_map, o
     vertices = [""]
     edges = []
     frontier = []
-    origin = "abcde"
+    origin = ""
 
     for l in alphabet:
         u = legal_next_letters(l, alphabet=alphabet, c_map=c_map, o_map=o_map)
@@ -205,7 +204,6 @@ def display_fsm(G: nx.DiGraph):
     #print(pos)
     # nx.draw_networkx_nodes(G, pos, edgecolors="black")
     pos[''] = [0.051, 0]
-    nx.draw_networkx_edge_labels(G, pos)
     nx.draw(G, pos, **options)
     # nx.draw_networkx_edge_labels(G, pos, edge_labels=hashable_edges_dictionary)
     #plt.legend(["1—>1", "1—>2", "1—>3", "2—>1", "2—>2", "2—>3", "3—>1", "3—>2", "3—>3"])
@@ -237,29 +235,23 @@ for node in FSM[0]:
         hashable_edges.append(('', list(node)[0], list(node)[0]))
 
 labeled_edges = {
-    (ele[0], ele[1]): {'label': ele[2]}for ele in hashable_edges
+    (ele[0], ele[1]): ele[2] for ele in hashable_edges
 }
-print("LABELED EDGES:")
+
 print(labeled_edges)
 
 G = nx.DiGraph()
-
-G.add_edges_from(labeled_edges)
 nx.set_edge_attributes(G, labeled_edges)
+G.add_edges_from(labeled_edges)
 print(G.number_of_nodes())
-print(G.adj['abcde'])
-print("ADJACENCY LIST")
 print(G.adj)
 # print(G.adj['ab'])
 display_fsm(G)
 pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
-print("Legal next letters: " + str(legal_next_letters('ec', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map)))
-print("Forbidden letters: " + str(forbidden_letters('ec', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map)))
-print("Negated Forbidden letters: " + str(pentagonal_alphabet - forbidden_letters('ec', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map)))
+print("Legal next letters: " + str(legal_next_letters('e', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map)))
 # print(legal_next_letters('c', pentagonal_alphabet, pentagonal_c_map, pentagonal_o_map))
 #print(neighborhood('b', pentagonal_c_map))
 # AAAAAAHHHH, The lambda function and filter seems to be giving the wrong answer here. clearly 'b' has forbidden letters
 # The forbidden letters of a single letter should be the letters that commute with your letter 'l' and come before it
 # as well as the letter itself as we cannot write 'l' twice
 #print(set(filter(lambda x: pentagonal_o_map[x] < pentagonal_o_map['b'], neighborhood('b', c_map=pentagonal_c_map))))
-

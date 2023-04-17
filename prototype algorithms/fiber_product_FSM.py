@@ -80,12 +80,15 @@ nodes = cartesian_product(pentagonal_alphabet, pentagonal_alphabet)
 # Join nodes together if they have the same label and edges exist in both
 def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     final_labeled_edges = {}
+    print("labeled")
+    print(labeled_edges_1)
     for e1 in labeled_edges_1:
         for e2 in labeled_edges_2:
             if labeled_edges_1[e1] == labeled_edges_2[e2]:
                 final_labeled_edges[((e1[0], e2[0]), (e1[1], e2[1]))] = labeled_edges_1[e1]
     G = nx.DiGraph()
     G.add_edges_from(final_labeled_edges)
+    print(final_labeled_edges)
     return (G, final_labeled_edges)
 
 G, final_edge_labels = fiber_product(labeled_edges_M, labeled_edges_N)

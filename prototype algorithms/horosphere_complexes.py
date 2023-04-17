@@ -5,6 +5,7 @@ import last_letter_FSM
 # Default values
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
+pentagonal_origin = 'abcde'
 pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 
@@ -57,7 +58,7 @@ for edge, label in final_edge_labels.items():
 # Termination is dependent on word being constructible via traversal through the FSM
 # O(nD) where n is the length of the word and D is the number of letters in our alphabet/defining graph
 def locate_associated_state(word, adj_dict):
-    current_state = ('', '')
+    current_state = (pentagonal_origin, '')
     constructed_word = ''
 
     # Lookup in this sense is linear with respect to length of our word
@@ -144,11 +145,13 @@ print(make_horosphere_connections({'name': 'dab', 'id': ('ab', 'ab')}, adj_list)
 print(adj_list[locate_associated_state("b", adj_list)])
 print("––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––")
 #print(connect_same_length_adj_nodes(3, G, adj_list))
-print(adj_list[locate_associated_state("e", adj_list)])
+test_word = 'ec'
+print(str(test_word) + ": " + str(locate_associated_state(test_word, adj_list)))
+print(adj_list[('abcde', '')])
 print(make_horosphere_connections({'name': 'ec', 'id': ('abe', 'c')}, adj_list))
 print("––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––")
 w = "dab"
-current_node = ('', '')
+current_node = ('abcde', '')
 current_node_traversal = [current_node]
 
 #print("TEST")
@@ -168,7 +171,7 @@ for last in current_node[0]:
             w_prime = w_prime.replace(w_prime[idx], '', 1)
             break
         idx -= 1
-    cnode = ('', '')
+    cnode = ('abcde', '')
     # traversal
     for letter in w_prime:
         for out_node, properties in adj_list[cnode].items():
