@@ -1,13 +1,27 @@
-from _collections_abc import Sequence
+from _collections_abc import Sequence, Iterable
+
+
+class WordGenerator:
+    def __init__(self, commutation_dict: dict[str: list], order_dict: dict[str: int]):
+        self.c_map = commutation_dict
+        self.o_map = order_dict
+
+    def word(self, word):
+        return Word(word, self.c_map, self.o_map)
 
 
 class Word(Sequence):
-    def __init__(self, word_as_list: list, commutation_dict: dict[str: list], order_dict: dict[str: int]):
-        self.word_as_list = word_as_list
+    def __init__(self, word, commutation_dict: dict[str: list], order_dict: dict[str: int]):
+        if word is list:
+            self.word_as_list = word
+        elif isinstance(word, Iterable):
+            self.word_as_list = list(word)
+        else:
+            raise TypeError("argument 'word' is not iterable")
         self.c_map = commutation_dict
         self.o_map = order_dict
-        self.alphabet = set().union(l for l in order_dict)
-        super.__init__()
+        self.alphabet = set().union(letter for letter in order_dict)
+        #super.__init__()
 
     def __getitem__(self, item):
         return self.word_as_list[item]
