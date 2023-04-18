@@ -240,6 +240,7 @@ class FSMGenerator:
         
         return [fix_words[:len(word)] + word for word in words_out]
     
+    # TODO: Update this algorithm to the new method
     def adj_words(self, word, G):
         if word == '':
             return
@@ -247,7 +248,7 @@ class FSMGenerator:
         word_suffix = word[len(word) // 2:]
         word_node = self.locate_associated_state(word_suffix)
 
-        print('CASE 1 (same-length) CONNECTIONS:')
+        # print('CASE 1 (same-length) CONNECTIONS:')
         # find a subset of the adjacent words on the horosphere of the same length
         for last_letter in word_node[1]:
             adj_word = word_suffix[::-1].replace(last_letter, '', 1)[::-1]
@@ -257,18 +258,18 @@ class FSMGenerator:
                 if len(word) == 2:
                     # so we do not consider possible added letters that would be on the ray or cancel
                     if add not in {'a', 'c'}:
-                        print(word, '--', word[:len(word) // 2] + adj_word + add)
+                        # print(word, '--', word[:len(word) // 2] + adj_word + add)
                         G.add_node(word[:len(word) // 2] + adj_word + add)
                         if (word[:len(word) // 2] + adj_word + add != word):
                             G.add_edge(word, word[:len(word) // 2] + adj_word + add)
                 else:
-                    print(word, '--', word[:len(word) // 2] + adj_word + add)
+                    # print(word, '--', word[:len(word) // 2] + adj_word + add)
                     G.add_node(word[:len(word) // 2] + adj_word + add)
                     if (word[:len(word) // 2] + adj_word + add != word):
-                        print(word, '--')
+                        # print(word, '--')
                         G.add_edge(word, word[:len(word) // 2] + adj_word + add)
 
-        print('CASE 2 ((n -- n-2)-length) CONNECTIONS:')
+        # print('CASE 2 ((n -- n-2)-length) CONNECTIONS:')
         # test if the last letter of prefix ray can commute with test_word (subset check)
         if set(word_suffix) <= self.c_map[word[len(word) // 2 - 1]]: 
             # get the word without the last letter of the prefix (since it will cancel)
@@ -276,10 +277,25 @@ class FSMGenerator:
             # use the possible last letters to make another cancellation and still remain of the horosphere
             for last_letter in word_node[1]:
                 adj_word = reduced_test_word[::-1].replace(last_letter, '', 1)[::-1]
-                print(word, '--', adj_word)
+                # print(word, '--', adj_word)
                 G.add_node(adj_word)
                 if adj_word != word:
                     G.add_edge(word, adj_word)
+
+    def visualize_horosphere(self, G):
+        pos = nx.kamada_kawai_layout(G, dim=2)
+        options = {
+            # "node_color": node_colors,
+            # "edge_color": edge_colors,
+            # "width": 4,
+            "font_size": 8,
+            # "edge_cmap": plt.cm.Blues,
+            "with_labels": True,
+            "node_size": 250,
+            "font_color": "black"
+        }
+        nx.draw(G, pos, **options)
+        plt.show()
 
 
 
@@ -309,8 +325,8 @@ torus_o_map = {
                 '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
 }
 
-generator = FSMGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map)
-# generator = FSMGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)
+# generator = FSMGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map)
+generator = FSMGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)
 networkx = generator.generate_short_lex_fsm_as_networkx()
 networkx2 = generator.generate_last_letter_fsm_as_networkx()
 # fiber_nx = generator.generate_fiber_product_fsm_as_networkx()
@@ -322,7 +338,7 @@ generator.generate_fiber_product_fsm_as_dict()
 # pprint(adj)
 
 # print(generator.locate_associated_state('acadec'))
-n = 1
+n = 3
 all_words = generator.all_length_words(n)
 
 # print(all_words)
@@ -333,6 +349,8 @@ Horosphere = nx.Graph()
 for w in all_words:
     generator.adj_words(w, Horosphere)
 
+generator.visualize_horosphere(Horosphere)
+
 # generator.visualize_fsm(Horosphere)
 
-nx.write_graphml_lxml(Horosphere, "horosphere_1.graphml")
+# nx.write_graphml_lxml(Horosphere, "horosphere_1.graphml")
