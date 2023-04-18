@@ -1,5 +1,6 @@
 from word import Word, WordGenerator
 import networkx as nx
+import matplotlib.pyplot as plt
 
 
 class FSMGenerator:
@@ -14,7 +15,6 @@ class FSMGenerator:
         self.c_map = commutation_dict
         self.o_map = order_dict
         self.alphabet = set().union(letter for letter in self.o_map)
-        print(self.alphabet.copy())
         self.language = WordGenerator(self.c_map, self.o_map)
 
     def __format_directed_edge(self, edge: tuple[set, set, str]):
@@ -40,7 +40,6 @@ class FSMGenerator:
         frontier = []
 
         for letter in self.alphabet:
-            print(f"letter {letter}")
             destination = Word(letter, self.c_map, self.o_map).legal_next_letters()
             frontier.append(destination)
             edges.append((origin, destination, letter))
@@ -104,13 +103,30 @@ class FSMGenerator:
     def generate_fiber_product_fsm_as_adj(self):
         pass
 
-    def visualize_fsm(self):
-        pass
+    def visualize_fsm(self, G):
+        pos = nx.circular_layout(G, dim=2)
+        options = {
+            # "node_color": node_colors,
+            # "edge_color": edge_colors,
+            # "width": 4,
+            "font_size": 8,
+            # "edge_cmap": plt.cm.Blues,
+            "with_labels": True,
+            "node_size": 250,
+            "font_color": "black"
+        }
+        nx.draw_networkx_edge_labels(G, pos)
+        nx.draw(G, pos, **options)
+        plt.show()
 
 
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
-FSMGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map).generate_short_lex_fsm_as_networkx()
+generator = FSMGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)
+networkx = generator.generate_short_lex_fsm_as_networkx()
+generator.visualize_fsm(networkx)
+
+
 
