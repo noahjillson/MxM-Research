@@ -66,12 +66,16 @@ class FSMGenerator:
         return {'vertices': vertices, 'edges': edges}
     
     def __generate_last_letter_vertices_edges(self):
+        origin = ''
         vertices = []
         edges = []
         frontier = []
 
         # Initialize the frontier
-        frontier.extend([set(l) for l in self.alphabet])
+        for letter in self.alphabet:
+            destination = Word(letter, self.c_map, self.o_map).last_letters()
+            edges.append((origin, destination, letter))
+            frontier.append(set(letter))
 
         while len(frontier) > 0:
             v = frontier.pop(0)
@@ -98,12 +102,6 @@ class FSMGenerator:
         hashable_edges = []
         for edge in fsm['edges']:
             hashable_edges.append(self.__format_directed_edge(edge))
-
-        # From my understanding this makes no change to hashable edges
-        # TODO Delete block comment once confirmed this loop is unnecessary
-        # for node in fsm['vertices']:
-        #     if len(node) == 1:
-        #         hashable_edges.append(('', list(node)[0], list(node)[0]))
 
         # Associate each edge (key) with a dictionary containing its label (value)
         labeled_edges = {
@@ -139,6 +137,10 @@ class FSMGenerator:
         return G
 
     def generate_fiber_product_fsm_as_networkx(self):
+        """
+        Create a fiber product of our shortlex and last_letter machine to starte generating 
+        adjacent words on the horosphere.
+        """
         shortlex_fsm = self.__generate_short_lex_vertices_edges()
         last_letter_fsm = self.__generate_last_letter_vertices_edges()
 
@@ -182,8 +184,8 @@ class FSMGenerator:
             fsm_dict[v] = {}
             for u in v_adj:
                 fsm_dict[v][v_adj[u]['label']] = tuple(u)
-
-        return fsm_dict
+        self.fsm_dict = fsm_dict
+        return 
 
     def visualize_fsm(self, G):
         pos = nx.circular_layout(G, dim=2)
@@ -201,11 +203,74 @@ class FSMGenerator:
         nx.draw(G, pos, **options)
         plt.show()
 
+    def locate_associated_state(self, word):
+        current_state = (''.join(sorted(self.alphabet)), '')
+
+        # Lookup in this sense is linear with respect to length of our word
+        for l in word:
+            current_state = self.fsm_dict[current_state][l]
+
+        return current_state
+    
+    def all_length_words(self, n):
+        """
+        Finds all words that have a suffix up to length n with a BFS
+        """
+        n += 1
+        fix_words = 'ac' * n
+        origin = (''.join(sorted(self.alphabet)), '')
+
+        # All elements of the frontier are of the form (node, current depth, word), we want the words
+        frontier = [(origin, 0, '')]
+        words_out = []
+        # visited = set()
+
+        while frontier:
+            node, depth, word = frontier.pop(0)
+            # Only go to depth n
+            if depth == n:
+                continue
+            if word.startswith('a') or word.startswith('c'):
+                continue
+            # visited.add(node)
+            words_out.append(word)
+            for next_letter in self.locate_associated_state(word)[0]:
+                frontier.append((self.fsm_dict[node][next_letter],\
+                                    depth+1, word + next_letter))
+        
+        return [fix_words[:len(word)] + word for word in words_out]
+    
+    # def adj_words(self, word):
+
+
 
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
+
+torus_c_map = {
+    'a': {'b', 'g', 'D', 'E', '4', '5'}, 'b': {'a', 'c', 'E', 'F', '5', '6'},
+    'c': {'b', 'd', 'F', 'G', '6', '7'}, 'd': {'c', 'e', 'A', 'G', '1', '7'},
+    'e': {'d', 'f', 'A', 'B', '1', '2'}, 'f': {'e', 'g', 'B', 'C', '2', '3'},
+    'g': {'a', 'f', 'C', 'D', '3', '4'},
+    'A': {'d', 'e', 'B', 'G', '4', '5'}, 'B': {'e', 'f', 'A', 'C', '5', '6'},
+    'C': {'f', 'g', 'B', 'D', '6', '7'}, 'D': {'a', 'g', 'C', 'E', '1', '7'},
+    'E': {'a', 'b', 'D', 'F', '1', '2'}, 'F': {'b', 'c', 'E', 'G', '2', '3'},
+    'G': {'c', 'd', 'A', 'F', '3', '4'},
+    '1': {'d', 'e', 'D', 'E', '2', '7'}, '2': {'e', 'f', 'E', 'F', '1', '3'},
+    '3': {'f', 'g', 'F', 'G', '2', '4'}, '4': {'a', 'g', 'A', 'G', '3', '5'},
+    '5': {'a', 'b', 'A', 'B', '4', '6'}, '6': {'b', 'c', 'B', 'C', '5', '7'},
+    '7': {'c', 'd', 'C', 'D', '1', '6'}
+}
+
+torus_o_map = {
+                'a': 0, 'b': 2, 'c': 1, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
+                'A': 7, 'B': 8, 'C': 9, 'D': 10, 'E': 11, 'F': 12, 'G': 13,
+                '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
+}
+
+# generator = FSMGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map)
 generator = FSMGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)
 networkx = generator.generate_short_lex_fsm_as_networkx()
 networkx2 = generator.generate_last_letter_fsm_as_networkx()
@@ -214,7 +279,11 @@ networkx2 = generator.generate_last_letter_fsm_as_networkx()
 # generator.visualize_fsm(networkx)
 # generator.visualize_fsm(networkx2)
 # generator.visualize_fsm(fiber_nx)
-# import pprint
-# pprint.pprint(generator.generate_fiber_product_fsm_as_dict())
+generator.generate_fiber_product_fsm_as_dict()
+# pprint(adj)
 
-
+# print(generator.locate_associated_state('acadec'))
+n = 3
+all_words = generator.all_length_words(n)
+# print(all_words)
+print(len(all_words))
