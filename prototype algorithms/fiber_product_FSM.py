@@ -8,10 +8,10 @@ def cartesian_product(tup1, tup2):
     return list(product(tup1, tup2))
 
 # Default values
-pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
-pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
-pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
-pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
+# pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
+# pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
+# pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
+# pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 
 # torus_o_map = {
 #                 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
@@ -37,45 +37,6 @@ pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 # torus_lst_alphabet = [{'f'}, {'C'}, {'b'}, {'F'}, {'c'}, {'A'}, {'4'}, {'d'}, {'2'}, {'1'}, {'e'}, {'7'}, {'G'},
 #                       {'g'}, {'E'}, {'B'}, {'a'}, {'3'}, {'6'}, {'D'}, {'5'}]
 
-FSM_M = forbidden_letters_FSM.generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map, o_map=pentagonal_o_map)
-
-hashable_edges_M = []
-for edge in FSM_M[1]:
-    hashable_edges_M.append(forbidden_letters_FSM.format_directed_edge(edge))
-
-# add length 1 edges
-for node in FSM_M[0]:
-    if len(node) == 1:
-        hashable_edges_M.append(('', list(node)[0], list(node)[0]))
-
-labeled_edges_M = {
-    (ele[0], ele[1]): ele[2] for ele in hashable_edges_M
-}
-
-FSM_N = last_letter_FSM.generate_fsm_last_letter(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map)
-# print("Vertices: " + str(FSM[0]))
-# print("Edges: " + str(FSM[1]))
-# print(str(len(FSM[0])) + " Vertices")
-# print(str(len(FSM[1])) + " Edges")
-
-hashable_edges_N = []
-for edge in FSM_N[1]:
-    hashable_edges_N.append(last_letter_FSM.format_directed_edge(edge))
-
-# add length 1 edges
-for node in FSM_N[0]:
-    if len(node) == 1:
-        hashable_edges_N.append(('', list(node)[0], list(node)[0]))
-
-labeled_edges_N = {
-    (ele[0], ele[1]): ele[2] for ele in hashable_edges_N
-}
-
-# print('labeled_edges_M', labeled_edges_M,'labeled_edges_N' ,labeled_edges_N, sep='\n')
-
-# Take a cartesian product of the torus alphabet with itself as the nodes
-nodes = cartesian_product(pentagonal_alphabet, pentagonal_alphabet)
-
 # Join nodes together if they have the same label and edges exist in both
 def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     final_labeled_edges = {}
@@ -87,11 +48,17 @@ def fiber_product(labeled_edges_1, labeled_edges_2) -> nx.DiGraph:
     G.add_edges_from(final_labeled_edges)
     return G
 
+# G, final_edge_labels = fiber_product(labeled_edges_M, labeled_edges_N)
 G = fiber_product(labeled_edges_M, labeled_edges_N)
 
+# options = {"node_size": 50, "with_labels": True}
+
+# pos = nx.circular_layout(G)
+# nx.draw_networkx_edge_labels(G, pos, final_edge_labels)
+# nx.draw(G, pos, **options)
 nx.draw(G)
 # print('Final fiber product: \n', G.edges)
-plt.show()
+# plt.show()
 # nx.write_edgelist(G, "test.edgelist")
 # for edge in G.edges():
 #     print(edge)
@@ -119,3 +86,44 @@ plt.show()
 
 # #Assuming that the graph g has nodes and edges entered
 # save_graph(G,"my_graph.pdf")
+
+
+# Old 
+# FSM_M = legal_next_letters_FSM.generate_fsm_forbidden_letters(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map, o_map=pentagonal_o_map)
+
+# hashable_edges_M = []
+# for edge in FSM_M[1]:
+#     hashable_edges_M.append(legal_next_letters_FSM.format_directed_edge(edge))
+
+# # add length 1 edges
+# for node in FSM_M[0]:
+#     if len(node) == 1:
+#         hashable_edges_M.append(('', list(node)[0], list(node)[0]))
+
+# labeled_edges_M = {
+#     (ele[0], ele[1]): ele[2] for ele in hashable_edges_M
+# }
+
+# FSM_N = last_letter_FSM.generate_fsm_last_letter(alphabet=pentagonal_alphabet, c_map=pentagonal_c_map)
+# # print("Vertices: " + str(FSM[0]))
+# # print("Edges: " + str(FSM[1]))
+# # print(str(len(FSM[0])) + " Vertices")
+# # print(str(len(FSM[1])) + " Edges")
+
+# hashable_edges_N = []
+# for edge in FSM_N[1]:
+#     hashable_edges_N.append(last_letter_FSM.format_directed_edge(edge))
+
+# # add length 1 edges
+# for node in FSM_N[0]:
+#     if len(node) == 1:
+#         hashable_edges_N.append(('', list(node)[0], list(node)[0]))
+
+# labeled_edges_N = {
+#     (ele[0], ele[1]): ele[2] for ele in hashable_edges_N
+# }
+
+# # print('labeled_edges_M', labeled_edges_M,'labeled_edges_N' ,labeled_edges_N, sep='\n')
+
+# # Take a cartesian product of the torus alphabet with itself as the nodes
+# nodes = cartesian_product(pentagonal_alphabet, pentagonal_alphabet)

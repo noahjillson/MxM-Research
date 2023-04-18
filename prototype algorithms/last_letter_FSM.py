@@ -57,7 +57,7 @@ def generate_fsm_last_letter(alphabet=torus_alphabet, c_map=torus_c_map) -> list
         for e in alphabet.copy().difference(v):
             u = set(e).union(v.intersection(c_map[e]))
             frontier.append(u)
-            edges.append([v, u, e])
+            edges.append((v, u, e))
 
     return [vertices, edges]
 
