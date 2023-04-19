@@ -33,7 +33,6 @@ class HorosphereGenerator:
         :return: A fiber product FSM state (A, B) where A denotes the letters that can be written while keeping the word short-lex and B denotes the letters that can be commuted to be last in the word.
         """
         current_state = (''.join(sorted(self.alphabet)), '')
-
         # Lookup in this sense is linear with respect to length of our word
         for letter in word:
             current_state = self.fiber_product_fsm[current_state][letter]
@@ -69,16 +68,51 @@ class HorosphereGenerator:
 
         return words_out
 
-    def __calculate_different_length_adj(self, word):
-        if len(word) % 2 == 0:
-            if 'a' in word.copy().insert(0, 'a').last_letters().difference(word.last_letters()):
+    def calculate_different_length_adj(self, word: str):
+
+        suffix = Word(word, self.c_map, self.o_map)
+        suffix_state = self.locate_associated_state(suffix)
+        a_suffix_state = self.locate_associated_state(suffix.copy().insert(0, 'a'))
+        c_suffix_state = self.locate_associated_state(suffix.copy().insert(0, 'c'))
+        # Need better variable name, the contents of this set represent which letters can commute forward and cause
+        # issue with the prefix of a word. This set will only ever have either 'a', 'c', or will be empty
+        ac_suffix_state = set(a_suffix_state[1]).union(set(c_suffix_state[1])).difference(set(suffix_state[1]))
+
+        if len(ac_suffix_state) == 0:
+            return []
+
+        adjacencies = []
+        # Word (suffix) has even length
+        if len(suffix) % 2 == 0:
+            if 'a' in ac_suffix_state:
+                # Lengthen word by a letter obtained from our horosphere generating equation for same length words
+                for next_letter in self.alphabet.copy().difference(set(suffix_state[1])).difference(ac_suffix_state):
+                    adjacencies.append([word, suffix.copy().shortlex_append(next_letter)])
                 pass
-        return []
+            if 'c' in ac_suffix_state:
+                # Shorten word by one of its possible last letters
+                for last_letter in suffix_state[1]:
+                    adjacencies.append([word, word[::-1].replace(last_letter, '', 1)[::-1]])
 
-    def __calculate_same_length_adj(self):
-        pass
+        # Word (suffix) has odd length
+        else:
+            if 'a' in ac_suffix_state:
+                # Shorten word by one of its possible last letters
+                for last_letter in suffix_state[1]:
+                    adjacencies.append([word, word[::-1].replace(last_letter, '', 1)[::-1]])
+            if 'c' in ac_suffix_state:
+                # Lengthen
+                for next_letter in self.alphabet.copy().difference(set(suffix_state[1])).difference(ac_suffix_state):
+                    adjacencies.append([word, suffix.copy().shortlex_append(next_letter)])
+        return adjacencies
 
-    def calculate_word_adj(self, word: str):
+    def calculate_word_adj(self, word):
+        adjacencies = []
+        adjacencies.extend(self.calculate_same_length_word_adj(word))
+        adjacencies.extend(self.calculate_different_length_adj(word))
+        return adjacencies
+
+    def calculate_same_length_word_adj(self, word: str):
         """
 
         :param word: A word that does NOT start with the ray to infinity on the horosphere
@@ -92,8 +126,8 @@ class HorosphereGenerator:
 
         # Finds connections between same length words on the horosphere
         for last_letter in word_node[1]:
-            print(word_node[1])
-            print(f"Last Letter: {last_letter}")
+            # print(word_node[1])
+            # print(f"Last Letter: {last_letter}")
             # Remove the first instance of the last letter from the right end of the word; This is our reduced word
             reduced_word = Word(word[::-1].replace(last_letter, '', 1)[::-1], self.c_map, self.o_map)
             # print(f"Word: {word}, Reduced Word: {reduced_word}")
@@ -108,7 +142,7 @@ class HorosphereGenerator:
             connecting_letters = connecting_letters.difference(ray_augmented_letters.difference(set(reduced_word_state[1])))
 
             for letter in connecting_letters:
-                print(f"Word: {word}, Reduced Word: {reduced_word.copy().shortlex_append(letter)}, Letter: {letter}")
+                # print(f"Word: {word}, Reduced Word: {reduced_word.copy().shortlex_append(letter)}, Letter: {letter}")
                 adjacencies.append((word, reduced_word.copy().shortlex_append(letter)))
 
         return adjacencies
@@ -162,7 +196,7 @@ class HorosphereGenerator:
         nx.draw(G, pos, **options)
         plt.show()
 
-length = 4
+length = 5
 print(f"Generating Horosphere with length {2*length} nodes...")
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
@@ -175,7 +209,9 @@ edges = []
 processed_edges = []
 hray = ['a', 'c']
 
-# print(hg.calculate_word_adj("dabe"))# Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
+x = hg.calculate_different_length_adj('b')
+for n in x:
+    print(f" DIFF LEN TEST: [{str(n[0])}, {str(n[1])}]")# Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
 
 print(words)
 for word in words:
