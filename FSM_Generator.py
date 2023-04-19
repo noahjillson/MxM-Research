@@ -185,7 +185,7 @@ class FSMGenerator:
             for u in v_adj:
                 fsm_dict[v][v_adj[u]['label']] = tuple(u)
         self.fsm_dict = fsm_dict
-        return 
+        return fsm_dict
 
     def visualize_fsm(self, G):
         pos = nx.circular_layout(G, dim=2)
@@ -283,7 +283,7 @@ class FSMGenerator:
                     G.add_edge(word, adj_word)
 
     def visualize_horosphere(self, G):
-        pos = nx.kamada_kawai_layout(G, dim=2)
+        pos = nx.spring_layout(G, dim=2)
         options = {
             # "node_color": node_colors,
             # "edge_color": edge_colors,

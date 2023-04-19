@@ -1,4 +1,5 @@
 from _collections_abc import Sequence, Iterable
+from abc import ABC
 
 
 class WordGenerator:
@@ -21,7 +22,7 @@ class Word(Sequence):
         self.c_map = commutation_dict
         self.o_map = order_dict
         self.alphabet = set().union(letter for letter in order_dict)
-        #super.__init__()
+        # super.__init__()
 
     def __getitem__(self, item):
         return self.word_as_list[item]
@@ -31,6 +32,27 @@ class Word(Sequence):
 
     def __str__(self):
         return ''.join(str(a) for a in self.word_as_list)
+
+    def copy(self):
+        copy_word_list = list(letter for letter in self.word_as_list)
+        return Word(copy_word_list, self.c_map, self.o_map)
+
+    def append(self, value: str) -> None:
+        self.word_as_list.append(value)
+
+    def shortlex_append(self, value: str):
+        optimal_insert_idx = len(self.word_as_list)
+        for i in reversed(range(len(self.word_as_list))):
+            if value not in self.c_map[self.word_as_list[i]]:
+                break
+            if self.o_map[self.word_as_list[i]] > self.o_map[value]:
+                optimal_insert_idx = i
+        self.word_as_list.insert(optimal_insert_idx, value)
+        return self
+
+    def insert(self, index: int, value: str):
+        self.word_as_list.insert(index, value)
+        return self
 
     def __last_letter_recursive(self, w_list) -> set:
         if len(w_list) <= 1:
