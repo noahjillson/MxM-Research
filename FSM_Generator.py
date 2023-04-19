@@ -324,32 +324,35 @@ torus_o_map = {
                 'A': 7, 'B': 8, 'C': 9, 'D': 10, 'E': 11, 'F': 12, 'G': 13,
                 '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
 }
-
+print("Generating Finite State Machines...")
 # generator = FSMGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map)
-generator = FSMGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)
+generator = FSMGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map)
 networkx = generator.generate_short_lex_fsm_as_networkx()
+print(f"Short-lex Machine Completed: \n\t\t{networkx}")
 networkx2 = generator.generate_last_letter_fsm_as_networkx()
+print(f"Last Letter Machine Completed: \n\t\t{networkx2}")
 # fiber_nx = generator.generate_fiber_product_fsm_as_networkx()
 
 # generator.visualize_fsm(networkx)
 # generator.visualize_fsm(networkx2)
 # generator.visualize_fsm(fiber_nx)
-generator.generate_fiber_product_fsm_as_dict()
+fiber = generator.generate_fiber_product_fsm_as_dict()
+print(f"Fibered Machine Completed: Dictionary with \n\t\t{len(fiber)} relations representing edges")
 # pprint(adj)
 
 # print(generator.locate_associated_state('acadec'))
-n = 3
+n = 1
 all_words = generator.all_length_words(n)
 
 # print(all_words)
-print(len(all_words))
+# print(len(all_words))
 
 Horosphere = nx.Graph()
 
 for w in all_words:
     generator.adj_words(w, Horosphere)
 
-generator.visualize_horosphere(Horosphere)
+# generator.visualize_horosphere(Horosphere)
 
 # generator.visualize_fsm(Horosphere)
 

@@ -1,3 +1,5 @@
+import networkx
+
 from word import Word, WordGenerator
 from FSM_Generator import FSMGenerator
 import networkx as nx
@@ -76,7 +78,7 @@ class HorosphereGenerator:
     def __calculate_same_length_adj(self):
         pass
 
-    def calculate_word_adj(self, word: Word):
+    def calculate_word_adj(self, word: str):
         """
 
         :param word: A word that does NOT start with the ray to infinity on the horosphere
@@ -90,6 +92,8 @@ class HorosphereGenerator:
 
         # Finds connections between same length words on the horosphere
         for last_letter in word_node[1]:
+            print(word_node[1])
+            print(f"Last Letter: {last_letter}")
             # Remove the first instance of the last letter from the right end of the word; This is our reduced word
             reduced_word = Word(word[::-1].replace(last_letter, '', 1)[::-1], self.c_map, self.o_map)
             # print(f"Word: {word}, Reduced Word: {reduced_word}")
@@ -97,15 +101,17 @@ class HorosphereGenerator:
             a_aug_word_state = self.locate_associated_state(reduced_word.copy().insert(0, 'a'))
             c_aug_word_state = self.locate_associated_state(reduced_word.copy().insert(0, 'c'))
 
+            # I believe this is where the issue is, sometimes an a can commute all the way forward and this is meand to stop that
             connecting_letters = self.alphabet.copy().difference(set(reduced_word_state[1]))
             ray_augmented_letters = set(a_aug_word_state[1]).union(set(c_aug_word_state[1]))
-            connecting_letters.difference(ray_augmented_letters.difference(set(reduced_word_state[1])))
+            # The extra difference of set(reduced_word_state[1]) here is unnecessary see proof on blackboard
+            connecting_letters = connecting_letters.difference(ray_augmented_letters.difference(set(reduced_word_state[1])))
 
             for letter in connecting_letters:
                 print(f"Word: {word}, Reduced Word: {reduced_word.copy().shortlex_append(letter)}, Letter: {letter}")
                 adjacencies.append((word, reduced_word.copy().shortlex_append(letter)))
 
-            return adjacencies
+        return adjacencies
 
         # By construction, word cannot start with 'a' or 'c' as this would cause issues with the latter added prefix
         # prefixed_words = [word.copy().insert(0, 'a'), word.copy().insert(0, 'c')]
@@ -156,20 +162,25 @@ class HorosphereGenerator:
         nx.draw(G, pos, **options)
         plt.show()
 
-
+length = 4
+print(f"Generating Horosphere with length {2*length} nodes...")
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
 pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
 pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
 
 hg = HorosphereGenerator(commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map, ray=['a', 'c'])
-words = hg.get_all_length_n_words(4)
+words = hg.get_all_length_n_words(length)
 edges = []
 processed_edges = []
 hray = ['a', 'c']
+
+# print(hg.calculate_word_adj("dabe"))# Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
+
 print(words)
 for word in words:
     edges.extend(hg.calculate_word_adj(word))
+print(edges)
 for edge in edges:
     uv = []
     for u in edge:
@@ -182,5 +193,27 @@ for edge in edges:
     processed_edges.append(uv)
 
         #u.insert(0, hray[idx])
+processed_edges.pop(0)
+
+processed_edges = [edge for edge in processed_edges if edge[0] != edge[1]]
+
+G = networkx.Graph()
+G.add_edges_from(processed_edges)
+# nx.draw_spring(G)
+# plt.show()
+
+pos = nx.spring_layout(G, dim=2)
+options = {
+    # "node_color": node_colors,
+    # "edge_color": edge_colors,
+    # "width": 4,
+    "font_size": 8,
+    # "edge_cmap": plt.cm.Blues,
+    "with_labels": True,
+    "node_size": 200,
+    "font_color": "black"
+}
+nx.draw(G, pos, **options)
+plt.show()
 
 print(processed_edges)
