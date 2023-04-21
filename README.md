@@ -5,7 +5,7 @@
 - [x] Shortlex algorithm
 - [x] Last letter algorithm
 - [x] Make FSM (N) based on the last letter algorithm
-- [ ] Qualify when a word of length $2n$ is next to a word of length $2n+2$
+- [x] Qualify when a word of length $2n$ is next to a word of length $2n+2$
 - [x] Make fiber product of FSM M and N
 - [x] Forbidden letters algorithm
 
