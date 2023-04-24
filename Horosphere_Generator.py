@@ -196,7 +196,8 @@ class HorosphereGenerator:
         nx.draw(G, pos, **options)
         plt.show()
 
-length = 1
+
+length = 2
 print(f"Generating Horosphere with length {2*length} nodes...")
 pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
 pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
@@ -262,7 +263,7 @@ G.add_edges_from(processed_edges)
 # plt.show()
 
 # pos = nx.spring_layout(G, pos={"": (0, 0)}, dim=2, iterations=500, fixed=[""])
-pos = nx.spring_layout(G, dim=2, iterations=100, weight=5)
+#pos = nx.spring_layout(G, dim=2, iterations=100, weight=5)
 colors = []
 for node in G:
     if len(node) == 12:
@@ -289,7 +290,8 @@ options = {
     "node_size": 400,
     "font_color": "black"
 }
-nx.draw(G, pos, **options)
+nx.write_graphml_lxml(G, f"horosphere_length_{length}.graphml")
+nx.draw(G, **options)
 plt.show()
 
 #print(processed_edges)
