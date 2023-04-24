@@ -1,5 +1,5 @@
 import networkx
-
+import matplotlib.colors
 from word import Word, WordGenerator
 from FSM_Generator import FSMGenerator
 import networkx as nx
@@ -116,7 +116,6 @@ class HorosphereGenerator:
         """
 
         :param word: A word that does NOT start with the ray to infinity on the horosphere
-        :param G:
         :return:
         """
         if len(word) == 0:
@@ -191,7 +190,8 @@ class HorosphereGenerator:
             # "edge_cmap": plt.cm.Blues,
             "with_labels": True,
             "node_size": 250,
-            "font_color": "black"
+            "font_color": "black",
+            'alpha': 0.5
         }
         nx.draw(G, pos, **options)
         plt.show()
@@ -226,12 +226,13 @@ torus_c_map = {
 hg = HorosphereGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map, ray=['a', 'c'])
 words = hg.get_all_length_n_words(length)
 edges = []
+edges_set = set()
 processed_edges = []
 hray = ['a', 'c']
 
 x = hg.calculate_different_length_adj('b')
 for n in x:
-    print(f" DIFF LEN TEST: [{str(n[0])}, {str(n[1])}]")# Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
+    print(f" DIFF LEN TEST: [{str(n[0])}, {str(n[1])}]") # Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
 
 print(words)
 for word in words:
@@ -247,29 +248,48 @@ for edge in edges:
             idx = (idx + 1) % 2
         uv.append(prefix + str(u))
     processed_edges.append(uv)
+    edges_set.add(tuple(uv))
 
-        #u.insert(0, hray[idx])
+        # u.insert(0, hray[idx])
 processed_edges.pop(0)
 
 processed_edges = [edge for edge in processed_edges if edge[0] != edge[1]]
-
+# print(edges_set)
+print(len(edges_set))
 G = networkx.Graph()
 G.add_edges_from(processed_edges)
 # nx.draw_spring(G)
 # plt.show()
 
-pos = nx.spring_layout(G, dim=2)
+# pos = nx.spring_layout(G, pos={"": (0, 0)}, dim=2, iterations=500, fixed=[""])
+pos = nx.spring_layout(G, dim=2, iterations=100, weight=5)
+colors = []
+for node in G:
+    if len(node) == 12:
+        colors.append(matplotlib.colors.to_rgba("#8E44AD", 1))
+    elif len(node) == 10:
+        colors.append(matplotlib.colors.to_rgba("#F1C40F", 1))
+    elif len(node) == 8:
+        colors.append(matplotlib.colors.to_rgba("#FF5733", 1))
+    elif len(node) == 6:
+        colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
+    elif len(node) == 4:
+        colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
+    elif len(node) == 2:
+        colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
+    elif len(node) == 0:
+        colors.append(matplotlib.colors.to_rgba("#b0b0b0", 1))
 options = {
-    # "node_color": node_colors,
+    "node_color": colors,
     # "edge_color": edge_colors,
     # "width": 4,
-    "font_size": 8,
+    "font_size": 20,
     # "edge_cmap": plt.cm.Blues,
     "with_labels": True,
-    "node_size": 200,
+    "node_size": 400,
     "font_color": "black"
 }
 nx.draw(G, pos, **options)
 plt.show()
 
-print(processed_edges)
+#print(processed_edges)
