@@ -54,5 +54,11 @@ def test_horosphere():
 
 
 if __name__ == '__main__':
-    FSM_Gen = FSMGenerator(DG.torus_c_map, DG.pentagonal_o_map)
+    length = 1
+    horosphere_type = "torus"
+    c_map = DG.torus_c_map
+    o_map = DG.torus_o_map
 
+    FSM_Gen = FSMGenerator(c_map, o_map)
+    Horo_Gen = HorosphereGenerator(c_map, o_map, ray=['a', 'c'])
+    Horo_Gen.save_horosphere_as_graphml(horosphere_length=length, horosphere_type=horosphere_type)

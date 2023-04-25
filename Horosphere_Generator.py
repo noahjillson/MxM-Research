@@ -180,7 +180,40 @@ class HorosphereGenerator:
                         # print(word, '--')
                         G.add_edge(word, word[:len(word) // 2] + adj_word + add)
 
-    def visualize_horosphere(self, G):
+    def calculate_horosphere_edges(self, word_list):
+        edges = []
+        edges_set = set()
+        processed_edges = []
+
+        for word in word_list:
+            edges.extend(self.calculate_word_adj(word))
+
+        for edge in edges:
+            uv = []
+            for u in edge:
+                idx = 0
+                prefix = ''
+                for i in range(len(u)):
+                    prefix = prefix + self.ray[idx]
+                    idx = (idx + 1) % 2
+                uv.append(prefix + str(u))
+            processed_edges.append(uv)
+            edges_set.add(tuple(uv))
+
+        processed_edges.pop(0)
+        processed_edges = [edge for edge in processed_edges if edge[0] != edge[1]]
+        return processed_edges
+
+    def horosphere_as_networkx(self, length):
+        words = self.get_all_length_n_words(length)
+        processed_edges = self.calculate_horosphere_edges(words)
+
+        G = networkx.Graph()
+        G.add_edges_from(processed_edges)
+        return G
+
+    @staticmethod
+    def visualize_horosphere(G):
         pos = nx.spring_layout(G, dim=2)
         options = {
             # "node_color": node_colors,
@@ -196,102 +229,107 @@ class HorosphereGenerator:
         nx.draw(G, pos, **options)
         plt.show()
 
-
-length = 4
-print(f"Generating Horosphere with length {2*length} nodes...")
-pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
-pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
-pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
-pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
-torus_o_map = {
-                'a': 0, 'b': 2, 'c': 1, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
-                'A': 7, 'B': 8, 'C': 9, 'D': 10, 'E': 11, 'F': 12, 'G': 13,
-                '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
-}
-torus_c_map = {
-    'a': {'b', 'g', 'D', 'E', '4', '5'}, 'b': {'a', 'c', 'E', 'F', '5', '6'},
-    'c': {'b', 'd', 'F', 'G', '6', '7'}, 'd': {'c', 'e', 'A', 'G', '1', '7'},
-    'e': {'d', 'f', 'A', 'B', '1', '2'}, 'f': {'e', 'g', 'B', 'C', '2', '3'},
-    'g': {'a', 'f', 'C', 'D', '3', '4'},
-    'A': {'d', 'e', 'B', 'G', '4', '5'}, 'B': {'e', 'f', 'A', 'C', '5', '6'},
-    'C': {'f', 'g', 'B', 'D', '6', '7'}, 'D': {'a', 'g', 'C', 'E', '1', '7'},
-    'E': {'a', 'b', 'D', 'F', '1', '2'}, 'F': {'b', 'c', 'E', 'G', '2', '3'},
-    'G': {'c', 'd', 'A', 'F', '3', '4'},
-    '1': {'d', 'e', 'D', 'E', '2', '7'}, '2': {'e', 'f', 'E', 'F', '1', '3'},
-    '3': {'f', 'g', 'F', 'G', '2', '4'}, '4': {'a', 'g', 'A', 'G', '3', '5'},
-    '5': {'a', 'b', 'A', 'B', '4', '6'}, '6': {'b', 'c', 'B', 'C', '5', '7'},
-    '7': {'c', 'd', 'C', 'D', '1', '6'}
-}
+    def save_horosphere_as_graphml(self, horosphere_length, G=None, horosphere_type="horosphere"):
+        if G is None:
+            G = self.horosphere_as_networkx(horosphere_length)
+        nx.write_graphml_lxml(G, f"Horosphere_Graphml/{horosphere_type}_length_{horosphere_length}.graphml")
 
 
-hg = HorosphereGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map, ray=['a', 'c'])
-words = hg.get_all_length_n_words(length)
-edges = []
-edges_set = set()
-processed_edges = []
-hray = ['a', 'c']
-
-x = hg.calculate_different_length_adj('b')
-for n in x:
-    print(f" DIFF LEN TEST: [{str(n[0])}, {str(n[1])}]") # Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
-
-print(words)
-for word in words:
-    edges.extend(hg.calculate_word_adj(word))
-print(edges)
-for edge in edges:
-    uv = []
-    for u in edge:
-        idx = 0
-        prefix = ''
-        for i in range(len(u)):
-            prefix = prefix + hray[idx]
-            idx = (idx + 1) % 2
-        uv.append(prefix + str(u))
-    processed_edges.append(uv)
-    edges_set.add(tuple(uv))
-
-        # u.insert(0, hray[idx])
-processed_edges.pop(0)
-
-processed_edges = [edge for edge in processed_edges if edge[0] != edge[1]]
-# print(edges_set)
-print(len(edges_set))
-G = networkx.Graph()
-G.add_edges_from(processed_edges)
-# nx.draw_spring(G)
-# plt.show()
-
-# pos = nx.spring_layout(G, pos={"": (0, 0)}, dim=2, iterations=500, fixed=[""])
-#pos = nx.spring_layout(G, dim=2, iterations=100, weight=5)
-colors = []
-for node in G:
-    if len(node) == 12:
-        colors.append(matplotlib.colors.to_rgba("#8E44AD", 1))
-    elif len(node) == 10:
-        colors.append(matplotlib.colors.to_rgba("#F1C40F", 1))
-    elif len(node) == 8:
-        colors.append(matplotlib.colors.to_rgba("#FF5733", 1))
-    elif len(node) == 6:
-        colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
-    elif len(node) == 4:
-        colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
-    elif len(node) == 2:
-        colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
-    elif len(node) == 0:
-        colors.append(matplotlib.colors.to_rgba("#b0b0b0", 1))
-options = {
-    "node_color": colors,
-    # "edge_color": edge_colors,
-    # "width": 4,
-    "font_size": 20,
-    # "edge_cmap": plt.cm.Blues,
-    "with_labels": True,
-    "node_size": 400,
-    "font_color": "black"
-}
-nx.write_graphml_lxml(G, f"horosphere_length_{length}.graphml")
-#nx.draw(G, **options)
-#plt.show()
-
-#print(processed_edges)
+# length = 4
+# print(f"Generating Horosphere with length {2*length} nodes...")
+# pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
+# pentagonal_alphabet = {'a', 'b', 'c', 'd', 'e'}
+# pentagonal_lst_alphabet = [{'c'}, {'d'}, {'b'}, {'e'}, {'a'}]
+# pentagonal_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3, 'e': 4}
+# torus_o_map = {
+#                 'a': 0, 'b': 2, 'c': 1, 'd': 3, 'e': 4, 'f': 5, 'g': 6,
+#                 'A': 7, 'B': 8, 'C': 9, 'D': 10, 'E': 11, 'F': 12, 'G': 13,
+#                 '1': 14, '2': 15, '3': 16, '4': 17, '5': 18, '6': 19, '7': 20
+# }
+# torus_c_map = {
+#     'a': {'b', 'g', 'D', 'E', '4', '5'}, 'b': {'a', 'c', 'E', 'F', '5', '6'},
+#     'c': {'b', 'd', 'F', 'G', '6', '7'}, 'd': {'c', 'e', 'A', 'G', '1', '7'},
+#     'e': {'d', 'f', 'A', 'B', '1', '2'}, 'f': {'e', 'g', 'B', 'C', '2', '3'},
+#     'g': {'a', 'f', 'C', 'D', '3', '4'},
+#     'A': {'d', 'e', 'B', 'G', '4', '5'}, 'B': {'e', 'f', 'A', 'C', '5', '6'},
+#     'C': {'f', 'g', 'B', 'D', '6', '7'}, 'D': {'a', 'g', 'C', 'E', '1', '7'},
+#     'E': {'a', 'b', 'D', 'F', '1', '2'}, 'F': {'b', 'c', 'E', 'G', '2', '3'},
+#     'G': {'c', 'd', 'A', 'F', '3', '4'},
+#     '1': {'d', 'e', 'D', 'E', '2', '7'}, '2': {'e', 'f', 'E', 'F', '1', '3'},
+#     '3': {'f', 'g', 'F', 'G', '2', '4'}, '4': {'a', 'g', 'A', 'G', '3', '5'},
+#     '5': {'a', 'b', 'A', 'B', '4', '6'}, '6': {'b', 'c', 'B', 'C', '5', '7'},
+#     '7': {'c', 'd', 'C', 'D', '1', '6'}
+# }
+#
+#
+# hg = HorosphereGenerator(commutation_dict=torus_c_map, order_dict=torus_o_map, ray=['a', 'c'])
+# words = hg.get_all_length_n_words(length)
+# edges = []
+# edges_set = set()
+# processed_edges = []
+# hray = ['a', 'c']
+#
+# x = hg.calculate_different_length_adj('b')
+# for n in x:
+#     print(f" DIFF LEN TEST: [{str(n[0])}, {str(n[1])}]") # Word("dacb", commutation_dict=pentagonal_c_map, order_dict=pentagonal_o_map)))
+#
+# print(words)
+# for word in words:
+#     edges.extend(hg.calculate_word_adj(word))
+# print(edges)
+# for edge in edges:
+#     uv = []
+#     for u in edge:
+#         idx = 0
+#         prefix = ''
+#         for i in range(len(u)):
+#             prefix = prefix + hray[idx]
+#             idx = (idx + 1) % 2
+#         uv.append(prefix + str(u))
+#     processed_edges.append(uv)
+#     edges_set.add(tuple(uv))
+#
+#         # u.insert(0, hray[idx])
+# processed_edges.pop(0)
+#
+# processed_edges = [edge for edge in processed_edges if edge[0] != edge[1]]
+# # print(edges_set)
+# print(len(edges_set))
+# G = networkx.Graph()
+# G.add_edges_from(processed_edges)
+# # nx.draw_spring(G)
+# # plt.show()
+#
+# # pos = nx.spring_layout(G, pos={"": (0, 0)}, dim=2, iterations=500, fixed=[""])
+# #pos = nx.spring_layout(G, dim=2, iterations=100, weight=5)
+# colors = []
+# for node in G:
+#     if len(node) == 12:
+#         colors.append(matplotlib.colors.to_rgba("#8E44AD", 1))
+#     elif len(node) == 10:
+#         colors.append(matplotlib.colors.to_rgba("#F1C40F", 1))
+#     elif len(node) == 8:
+#         colors.append(matplotlib.colors.to_rgba("#FF5733", 1))
+#     elif len(node) == 6:
+#         colors.append(matplotlib.colors.to_rgba("#ff96d5", 1))
+#     elif len(node) == 4:
+#         colors.append(matplotlib.colors.to_rgba("#96b9ff", 1))
+#     elif len(node) == 2:
+#         colors.append(matplotlib.colors.to_rgba("#e4ff85", 1))
+#     elif len(node) == 0:
+#         colors.append(matplotlib.colors.to_rgba("#b0b0b0", 1))
+# options = {
+#     "node_color": colors,
+#     # "edge_color": edge_colors,
+#     # "width": 4,
+#     "font_size": 20,
+#     # "edge_cmap": plt.cm.Blues,
+#     "with_labels": True,
+#     "node_size": 400,
+#     "font_color": "black"
+# }
+# nx.write_graphml_lxml(G, f"horosphere_length_{length}.graphml")
+# #nx.draw(G, **options)
+# #plt.show()
+#
+# #print(processed_edges)
