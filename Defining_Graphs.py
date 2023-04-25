@@ -1,5 +1,15 @@
 class DefiningGraphs:
     # Theta
+    theta_o_map = {
+    'a': 0, 'b': 2, 'c': 1, 'd': 3,
+    'e': 4, 'f': 5, 'g': 6, 'h': 7,
+    'i': 8
+    }
+    theta_c_map = {
+        'a': {'b', 'e', 'h'}, 'b': {'a', 'd'}, 'd': {'b', 'c'},
+        'c': {'d', 'g', 'i'}, 'g': {'c', 'f'}, 'f': {'e', 'g'},
+        'e': {'a', 'f'}, 'h': {'a', 'i'}, 'i': {'h', 'c'}
+    }
 
     # Pentagon
     pentagonal_c_map = {'a': {'b', 'e'}, 'b': {'a', 'c'}, 'c': {'b', 'd'}, 'd': {'e', 'c'}, 'e': {'a', 'd'}}
