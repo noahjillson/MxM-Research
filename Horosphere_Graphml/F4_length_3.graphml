@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph edgedefault="undirected">
+    <node id="" />
+    <node id="ad" />
+    <node id="ae" />
+    <node id="acda" />
+    <node id="acde" />
+    <node id="acdc" />
+    <node id="acea" />
+    <node id="aced" />
+    <node id="acec" />
+    <node id="acadac" />
+    <node id="acadae" />
+    <node id="acadad" />
+    <node id="acadca" />
+    <node id="acadce" />
+    <node id="acadcd" />
+    <node id="acadea" />
+    <node id="acaded" />
+    <node id="acadec" />
+    <node id="acaeac" />
+    <node id="acaeae" />
+    <node id="acaead" />
+    <node id="acaeca" />
+    <node id="acaece" />
+    <node id="acaecd" />
+    <node id="acaeda" />
+    <node id="acaede" />
+    <node id="acaedc" />
+    <edge source="" target="ad" />
+    <edge source="" target="ae" />
+    <edge source="ad" target="ae" />
+    <edge source="acda" target="acde" />
+    <edge source="acda" target="acdc" />
+    <edge source="acde" target="acdc" />
+    <edge source="acea" target="aced" />
+    <edge source="acea" target="acec" />
+    <edge source="aced" target="acec" />
+    <edge source="acadac" target="acadae" />
+    <edge source="acadac" target="acadad" />
+    <edge source="acadae" target="acadad" />
+    <edge source="acadca" target="acadce" />
+    <edge source="acadca" target="acadcd" />
+    <edge source="acadce" target="acadcd" />
+    <edge source="acadea" target="acaded" />
+    <edge source="acadea" target="acadec" />
+    <edge source="acaded" target="acadec" />
+    <edge source="acaeac" target="acaeae" />
+    <edge source="acaeac" target="acaead" />
+    <edge source="acaeae" target="acaead" />
+    <edge source="acaeca" target="acaece" />
+    <edge source="acaeca" target="acaecd" />
+    <edge source="acaece" target="acaecd" />
+    <edge source="acaeda" target="acaede" />
+    <edge source="acaeda" target="acaedc" />
+    <edge source="acaede" target="acaedc" />
+  </graph>
+</graphml>

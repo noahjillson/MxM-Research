@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph edgedefault="undirected">
+    <node id="" />
+    <node id="ad" />
+    <node id="ab" />
+    <node id="ae" />
+    <node id="af" />
+    <node id="acda" />
+    <node id="acdb" />
+    <node id="acde" />
+    <node id="acdf" />
+    <node id="acfa" />
+    <node id="acfe" />
+    <node id="acbf" />
+    <node id="acbc" />
+    <node id="acbe" />
+    <node id="acbd" />
+    <node id="acabec" />
+    <node id="acabeb" />
+    <node id="acabde" />
+    <node id="acabef" />
+    <node id="acec" />
+    <node id="aceb" />
+    <node id="acef" />
+    <node id="acaebc" />
+    <node id="acaebe" />
+    <node id="acaebd" />
+    <node id="acaebf" />
+    <edge source="" target="ad" />
+    <edge source="" target="ab" />
+    <edge source="" target="ae" />
+    <edge source="" target="af" />
+    <edge source="ad" target="ab" />
+    <edge source="ad" target="ae" />
+    <edge source="ad" target="af" />
+    <edge source="ad" target="acda" />
+    <edge source="ad" target="acdb" />
+    <edge source="ad" target="acde" />
+    <edge source="ad" target="acdf" />
+    <edge source="ab" target="ae" />
+    <edge source="ab" target="af" />
+    <edge source="ae" target="af" />
+    <edge source="af" target="acfa" />
+    <edge source="af" target="acfe" />
+    <edge source="af" target="acbf" />
+    <edge source="af" target="acdf" />
+    <edge source="acda" target="acdb" />
+    <edge source="acda" target="acde" />
+    <edge source="acda" target="acdf" />
+    <edge source="acdb" target="acde" />
+    <edge source="acdb" target="acdf" />
+    <edge source="acde" target="acec" />
+    <edge source="acde" target="aceb" />
+    <edge source="acde" target="acef" />
+    <edge source="acde" target="acdf" />
+    <edge source="acdf" target="acbf" />
+    <edge source="acdf" target="acfa" />
+    <edge source="acdf" target="acfe" />
+    <edge source="acfa" target="acbf" />
+    <edge source="acfa" target="acfe" />
+    <edge source="acfe" target="acbf" />
+    <edge source="acbf" target="acbc" />
+    <edge source="acbf" target="acbd" />
+    <edge source="acbf" target="acbe" />
+    <edge source="acbc" target="acbe" />
+    <edge source="acbc" target="acbd" />
+    <edge source="acbe" target="acbd" />
+    <edge source="acbe" target="acabec" />
+    <edge source="acbe" target="acabeb" />
+    <edge source="acbe" target="acabde" />
+    <edge source="acbe" target="acabef" />
+    <edge source="acec" target="aceb" />
+    <edge source="acec" target="acef" />
+    <edge source="aceb" target="acef" />
+    <edge source="aceb" target="acaebc" />
+    <edge source="aceb" target="acaebe" />
+    <edge source="aceb" target="acaebd" />
+    <edge source="aceb" target="acaebf" />
+  </graph>
+</graphml>

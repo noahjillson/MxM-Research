@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph edgedefault="undirected">
+    <node id="" />
+    <node id="af" />
+    <node id="ae" />
+    <node id="ad" />
+    <node id="ab" />
+    <node id="acdf" />
+    <node id="acdb" />
+    <node id="acda" />
+    <node id="acde" />
+    <node id="acfa" />
+    <node id="acbf" />
+    <node id="acfe" />
+    <node id="acbc" />
+    <node id="acbd" />
+    <node id="acbe" />
+    <node id="acabef" />
+    <node id="acabde" />
+    <node id="acabec" />
+    <node id="acabeb" />
+    <node id="acef" />
+    <node id="acec" />
+    <node id="aceb" />
+    <node id="acaebf" />
+    <node id="acaebd" />
+    <node id="acaebc" />
+    <node id="acaebe" />
+    <node id="acabca" />
+    <node id="acabcf" />
+    <node id="acabcd" />
+    <node id="acabcb" />
+    <node id="acabce" />
+    <node id="acabdf" />
+    <node id="acabda" />
+    <node id="acabdb" />
+    <node id="acabfa" />
+    <node id="acabfe" />
+    <node id="acafaf" />
+    <node id="acafad" />
+    <node id="acafac" />
+    <node id="acafae" />
+    <node id="acadab" />
+    <node id="acadbf" />
+    <node id="acadbd" />
+    <node id="acadbc" />
+    <node id="acadbe" />
+    <node id="acadaf" />
+    <node id="acadad" />
+    <node id="acadac" />
+    <node id="acadae" />
+    <node id="acadef" />
+    <node id="acadec" />
+    <node id="acadeb" />
+    <node id="acadfa" />
+    <node id="acadfe" />
+    <node id="acaecf" />
+    <node id="acaeca" />
+    <node id="acaecb" />
+    <node id="acaece" />
+    <node id="acaefa" />
+    <node id="acaefe" />
+    <node id="acafef" />
+    <node id="acafeb" />
+    <node id="acafec" />
+    <edge source="" target="af" />
+    <edge source="" target="ae" />
+    <edge source="" target="ad" />
+    <edge source="" target="ab" />
+    <edge source="af" target="ab" />
+    <edge source="af" target="ad" />
+    <edge source="af" target="ae" />
+    <edge source="af" target="acfa" />
+    <edge source="af" target="acbf" />
+    <edge source="af" target="acdf" />
+    <edge source="af" target="acfe" />
+    <edge source="ae" target="ab" />
+    <edge source="ae" target="ad" />
+    <edge source="ad" target="ab" />
+    <edge source="ad" target="acdf" />
+    <edge source="ad" target="acdb" />
+    <edge source="ad" target="acda" />
+    <edge source="ad" target="acde" />
+    <edge source="acdf" target="acbf" />
+    <edge source="acdf" target="acda" />
+    <edge source="acdf" target="acdb" />
+    <edge source="acdf" target="acde" />
+    <edge source="acdf" target="acfa" />
+    <edge source="acdf" target="acfe" />
+    <edge source="acdb" target="acda" />
+    <edge source="acdb" target="acde" />
+    <edge source="acda" target="acde" />
+    <edge source="acde" target="acef" />
+    <edge source="acde" target="acec" />
+    <edge source="acde" target="aceb" />
+    <edge source="acfa" target="acbf" />
+    <edge source="acfa" target="acfe" />
+    <edge source="acbf" target="acbc" />
+    <edge source="acbf" target="acbd" />
+    <edge source="acbf" target="acbe" />
+    <edge source="acbf" target="acfe" />
+    <edge source="acbc" target="acbd" />
+    <edge source="acbc" target="acbe" />
+    <edge source="acbd" target="acbe" />
+    <edge source="acbe" target="acabef" />
+    <edge source="acbe" target="acabde" />
+    <edge source="acbe" target="acabec" />
+    <edge source="acbe" target="acabeb" />
+    <edge source="acabef" target="acabde" />
+    <edge source="acabef" target="acabeb" />
+    <edge source="acabef" target="acabec" />
+    <edge source="acabde" target="acabcd" />
+    <edge source="acabde" target="acabda" />
+    <edge source="acabde" target="acabdb" />
+    <edge source="acabde" target="acabec" />
+    <edge source="acabde" target="acabeb" />
+    <edge source="acabde" target="acabdf" />
+    <edge source="acabec" target="acabeb" />
+    <edge source="acef" target="aceb" />
+    <edge source="acef" target="acec" />
+    <edge source="acec" target="aceb" />
+    <edge source="aceb" target="acaebf" />
+    <edge source="aceb" target="acaebd" />
+    <edge source="aceb" target="acaebc" />
+    <edge source="aceb" target="acaebe" />
+    <edge source="acaebf" target="acadef" />
+    <edge source="acaebf" target="acaebc" />
+    <edge source="acaebf" target="acaebd" />
+    <edge source="acaebf" target="acaebe" />
+    <edge source="acaebf" target="acaecf" />
+    <edge source="acaebf" target="acaefa" />
+    <edge source="acaebf" target="acaefe" />
+    <edge source="acaebd" target="acaebc" />
+    <edge source="acaebd" target="acaebe" />
+    <edge source="acaebc" target="acaebe" />
+    <edge source="acabca" target="acabcf" />
+    <edge source="acabca" target="acabcd" />
+    <edge source="acabca" target="acabcb" />
+    <edge source="acabca" target="acabce" />
+    <edge source="acabcf" target="acabcb" />
+    <edge source="acabcf" target="acabcd" />
+    <edge source="acabcf" target="acabce" />
+    <edge source="acabcf" target="acabfa" />
+    <edge source="acabcf" target="acabdf" />
+    <edge source="acabcf" target="acabfe" />
+    <edge source="acabcd" target="acabcb" />
+    <edge source="acabcd" target="acabdf" />
+    <edge source="acabcd" target="acabda" />
+    <edge source="acabcd" target="acabdb" />
+    <edge source="acabcd" target="acabce" />
+    <edge source="acabcb" target="acabce" />
+    <edge source="acabdf" target="acabda" />
+    <edge source="acabdf" target="acabdb" />
+    <edge source="acabdf" target="acabfa" />
+    <edge source="acabdf" target="acabfe" />
+    <edge source="acabda" target="acabdb" />
+    <edge source="acabfa" target="acabfe" />
+    <edge source="acabfa" target="acafaf" />
+    <edge source="acabfa" target="acafad" />
+    <edge source="acabfa" target="acafac" />
+    <edge source="acabfa" target="acafae" />
+    <edge source="acafaf" target="acafac" />
+    <edge source="acafaf" target="acafad" />
+    <edge source="acafaf" target="acafae" />
+    <edge source="acafad" target="acafac" />
+    <edge source="acafad" target="acafae" />
+    <edge source="acafac" target="acafae" />
+    <edge source="acafae" target="acadfe" />
+    <edge source="acafae" target="acafef" />
+    <edge source="acafae" target="acafeb" />
+    <edge source="acafae" target="acafec" />
+    <edge source="acadab" target="acadbf" />
+    <edge source="acadab" target="acadbd" />
+    <edge source="acadab" target="acadbc" />
+    <edge source="acadab" target="acadbe" />
+    <edge source="acadab" target="acadaf" />
+    <edge source="acadab" target="acadad" />
+    <edge source="acadab" target="acadac" />
+    <edge source="acadab" target="acadae" />
+    <edge source="acadbf" target="acadbc" />
+    <edge source="acadbf" target="acadbd" />
+    <edge source="acadbf" target="acadbe" />
+    <edge source="acadbf" target="acadfa" />
+    <edge source="acadbf" target="acadfe" />
+    <edge source="acadbd" target="acadbc" />
+    <edge source="acadbd" target="acadbe" />
+    <edge source="acadbc" target="acadbe" />
+    <edge source="acadaf" target="acadac" />
+    <edge source="acadaf" target="acadad" />
+    <edge source="acadaf" target="acadae" />
+    <edge source="acadad" target="acadac" />
+    <edge source="acadad" target="acadae" />
+    <edge source="acadac" target="acadae" />
+    <edge source="acadae" target="acadef" />
+    <edge source="acadae" target="acadec" />
+    <edge source="acadae" target="acadeb" />
+    <edge source="acadef" target="acadeb" />
+    <edge source="acadef" target="acadec" />
+    <edge source="acadef" target="acaecf" />
+    <edge source="acadef" target="acaefa" />
+    <edge source="acadef" target="acaefe" />
+    <edge source="acadec" target="acadeb" />
+    <edge source="acadec" target="acaecf" />
+    <edge source="acadec" target="acaeca" />
+    <edge source="acadec" target="acaecb" />
+    <edge source="acadec" target="acaece" />
+    <edge source="acadfa" target="acadfe" />
+    <edge source="acadfe" target="acafef" />
+    <edge source="acadfe" target="acafeb" />
+    <edge source="acadfe" target="acafec" />
+    <edge source="acaecf" target="acaeca" />
+    <edge source="acaecf" target="acaecb" />
+    <edge source="acaecf" target="acaece" />
+    <edge source="acaecf" target="acaefa" />
+    <edge source="acaecf" target="acaefe" />
+    <edge source="acaeca" target="acaecb" />
+    <edge source="acaeca" target="acaece" />
+    <edge source="acaecb" target="acaece" />
+    <edge source="acaefa" target="acaefe" />
+    <edge source="acafef" target="acafeb" />
+    <edge source="acafef" target="acafec" />
+    <edge source="acafeb" target="acafec" />
+  </graph>
+</graphml>
