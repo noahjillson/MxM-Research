@@ -206,10 +206,13 @@ class HorosphereGenerator:
 
     def horosphere_as_networkx(self, length):
         words = self.get_all_length_n_words(length)
+        print(f"Words of length {length} calculated: \n\t\t {len(words)} words found")
         processed_edges = self.calculate_horosphere_edges(words)
+        print(f"Words processing completed: \n\t\t {len(words)} words processed")
 
         G = networkx.Graph()
         G.add_edges_from(processed_edges)
+        print(f"Length {length} Horosphere generated: \n\t\t {G}")
         return G
 
     @staticmethod
@@ -223,8 +226,7 @@ class HorosphereGenerator:
             # "edge_cmap": plt.cm.Blues,
             "with_labels": True,
             "node_size": 250,
-            "font_color": "black",
-            'alpha': 0.5
+            "font_color": "black"
         }
         nx.draw(G, pos, **options)
         plt.show()

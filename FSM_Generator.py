@@ -190,7 +190,7 @@ class FSMGenerator:
     def visualize_fsm(self, G):
         pos = nx.circular_layout(G, dim=2)
         options = {
-            # "node_color": node_colors,
+            "node_color": "pink",
             # "edge_color": edge_colors,
             # "width": 4,
             "font_size": 8,
@@ -199,7 +199,7 @@ class FSMGenerator:
             "node_size": 250,
             "font_color": "black"
         }
-        nx.draw_networkx_edge_labels(G, pos)
+        #nx.draw_networkx_edge_labels(G, pos)
         nx.draw(G, pos, **options)
         plt.show()
 
