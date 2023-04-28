@@ -54,13 +54,13 @@ def test_horosphere():
 
 
 if __name__ == '__main__':
-    length = 4
-    horosphere_type = "F4"
-    c_map = DG.f4_c_map
-    o_map = DG.f4_o_map
+    length = 100
+    horosphere_type = "K4"
+    c_map = DG.k4_c_map
+    o_map = DG.k4_o_map
 
     FSM_Gen = FSMGenerator(c_map, o_map)
     Horo_Gen = HorosphereGenerator(c_map, o_map, ray=['a', 'c'])
-    # G = Horo_Gen.horosphere_as_networkx(length)
-    # Horo_Gen.visualize_horosphere(G)
+    G = Horo_Gen.horosphere_as_networkx(length)
+    Horo_Gen.visualize_horosphere(G)
     Horo_Gen.save_horosphere_as_graphml(horosphere_length=length, horosphere_type=horosphere_type)

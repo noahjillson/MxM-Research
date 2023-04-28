@@ -1,8 +1,15 @@
 class DefiningGraphs:
+    # Complete graph size 4
+    k4_o_map = {'a': 0, 'c': 1, 'b': 2, 'd': 3}
+    k4_c_map = {'a': {'b', 'c', 'd'}, 'c': {'a', 'b', 'd'}, 'd': {'a', 'b', 'c'}, 'b': {'a', 'c', 'd'}}
+
+    # Free Group On 5 generators
+    f5_o_map = {'a': 0, 'c': 1, 'd': 2, 'e': 3, 'f': 4}
+    f5_c_map = {'a': {}, 'c': {}, 'd': {}, 'e': {}, 'f': {}}
+
     # Free Group On 4 generators
     f4_o_map = {'a': 0, 'c': 1, 'd': 2, 'e': 3}
     f4_c_map = {'a': {}, 'c': {}, 'd': {}, 'e': {}}
-
 
     # disconnected lines
     dlines_o_map = {'a': 0, 'c': 1, 'd': 2, 'e': 3}
