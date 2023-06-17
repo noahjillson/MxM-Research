@@ -1,16 +1,9 @@
-# MxM-Research
+# Geometry of Horospheres in Hyperbolic Groups
 
-## TODO
+This project aims to understand and visualize horospheres in hyperbolic right-angled Coxeter groups. Using tools such as finite state machines and fiber products we are able to efficiently generate pieces of the horospheres of right-angled Coxeter Groups. The quick computation allows us to visualize the geometry in a manner not allowed for before. This gives us insight into the boundaries of such groups.
 
-- [x] Shortlex algorithm
-- [x] Last letter algorithm
-- [x] Make FSM (N) based on the last letter algorithm
-- [x] Qualify when a word of length $2n$ is next to a word of length $2n+2$
-- [x] Make fiber product of FSM M and N
-- [x] Forbidden letters algorithm
-- [x] Finish the new horosphere generator and test against pentagonal graph
-- [x] Generate horosphere for torus graph
-- [x] Try generating the horosphere of other graphs
+## Spring 2023
+![MxM Spring Poster](images/Horospheres_Project_Spring__23-1.png)
 
-Madison Experimental Mathematics Lab Geometry of Horospheres Computational Mathematics Research
-![MxM_Project_Poster](https://github.com/noahjillson/MxM-Research/blob/main/Hyperbolic_Horospheres_In_Graphs.png?raw=true)
+## Fall 2022
+![MxM Fall Poster](images/Hyperbolic_Horospheres_In_Graphs.png)

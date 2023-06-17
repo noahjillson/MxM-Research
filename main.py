@@ -54,10 +54,10 @@ def test_horosphere():
 
 
 if __name__ == '__main__':
-    length = 4
-    horosphere_type = "F4"
-    c_map = DG.f4_c_map
-    o_map = DG.f4_o_map
+    length = 3
+    horosphere_type = "torus"
+    c_map = DG.torus_c_map
+    o_map = DG.torus_o_map
 
     FSM_Gen = FSMGenerator(c_map, o_map)
     Horo_Gen = HorosphereGenerator(c_map, o_map, ray=['a', 'c'])
