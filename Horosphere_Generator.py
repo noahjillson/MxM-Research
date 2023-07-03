@@ -7,13 +7,14 @@ import matplotlib.pyplot as plt
 
 
 class HorosphereGenerator:
-    def __init__(self, commutation_dict: dict[str: list], order_dict: dict[str: int], ray: list[str]):
+    def __init__(self, commutation_dict: dict[str, set], order_dict: dict[str, int], ray: list[str] = ['a', 'c']):
         """
         Initialize a Horosphere Generator Object. Using the defining graph of a right-angled coxeter
         group, horosphere's can be created can be created.
 
-        :param commutation_dict: A dictionary representation of a defining graph. A letter (key) is associated with a list of letters (value) in the dictionary such that all letters in the list commute with the key
+        :param commutation_dict: A dictionary representation of a defining graph. A letter (key) is associated with a list of letters (value) in the dictionary such that all letters in the list commute with the key.
         :param order_dict: A dictionary representation of a total ordering on the letter in the defining graph. A letter (key) is associated with an index (value) that represents that letters relative position in the ordering.
+        :param ray: A list representing our ray of alternating letters (typically 'a' and 'c').
         """
         self.c_map = commutation_dict
         self.o_map = order_dict
@@ -22,7 +23,7 @@ class HorosphereGenerator:
         fsm_gen = FSMGenerator(self.c_map, self.o_map)
         self.fiber_product_fsm = fsm_gen.generate_fiber_product_fsm_as_dict()
 
-    def locate_associated_state(self, word):
+    def locate_associated_state(self, word: str):
         """
         The number of adjacencies of a node is bounded above by the number of letters in out alphabet/defining graph
         Thus we result in a pseudo-polynomial algorithm for canonical word lookup in our FSM. Correctness is dependent
@@ -39,7 +40,7 @@ class HorosphereGenerator:
 
         return current_state
 
-    def get_all_length_n_words(self, n):
+    def get_all_length_n_words(self, n: int):
         """
         Finds all words that have a suffix up to length n with a BFS
 
@@ -47,11 +48,11 @@ class HorosphereGenerator:
         :return: All possible short-lex words of length n.
         """
         n += 1
-        fix_words = 'ac' * n
         origin = (''.join(sorted(self.alphabet)), '')
 
-        # All elements of the frontier are of the form (node, current depth, word), we want the words
+        # All elements of the frontier are of the form (node, current depth, word)
         frontier = [(origin, 0, '')]
+        # We will add the words to words_out
         words_out = []
 
         while frontier:
@@ -59,146 +60,158 @@ class HorosphereGenerator:
             # Only go to depth n
             if depth == n:
                 continue
-            if word.startswith('a') or word.startswith('c'):
+
+            # Ignore words that start with the letters in our ray
+            if word.startswith(self.ray[0]) or word.startswith(self.ray[1]):
                 continue
-            # visited.add(node)
+            
             words_out.append(word)
+
+            # Continue traversing
             for next_letter in self.locate_associated_state(word)[0]:
                 frontier.append((self.fiber_product_fsm[node][next_letter], depth+1, word + next_letter))
 
         return words_out
+    
+    def calculate_same_length_word_adj(self, word: str):
+        """
+        Given a word, "word", find all connections to same length words on the horosphere
+
+        :param word: A word that does NOT start with the ray to infinity on the horosphere.
+        :return: The list of all such same length words.
+        """
+
+        # Edge case: empty string "" 
+        if len(word) == 0:
+            return [word]
+        
+        adjacencies = []
+
+        # Find the node in the FSM where the word is located 
+        word_node = self.locate_associated_state(word)
+
+        for last_letter in word_node[1]:
+
+            # Remove the first instance of the last letter from the right end of the word; This is our reduced word
+            reduced_word = Word(word[::-1].replace(last_letter, '', 1)[::-1], self.c_map, self.o_map)
+
+            reduced_word_state = self.locate_associated_state(reduced_word)
+
+            # Append 'a' or 'c' to the beginning of the reduced word
+            a_aug_word_state = self.locate_associated_state(reduced_word.copy().insert(0, self.ray[0]))
+            c_aug_word_state = self.locate_associated_state(reduced_word.copy().insert(0, self.ray[1]))
+
+            # Deal with the issue of words commuting all the way forward
+            connecting_letters = self.alphabet.copy().difference(set(reduced_word_state[1]))
+            ray_augmented_letters = set(a_aug_word_state[1]).union(set(c_aug_word_state[1]))
+            
+            # The extra difference of set(reduced_word_state[1]) here is unnecessary
+            connecting_letters = connecting_letters.difference(ray_augmented_letters.difference(set(reduced_word_state[1])))
+
+            # Lengthen the reduced word by its (shortlex) legal next letters to get all same length adjacent words
+            for letter in connecting_letters:
+                adjacencies.append((word, reduced_word.copy().shortlex_append(letter)))
+
+        return adjacencies
+
+        # By construction, word cannot start with 'a' or 'c' as this would cause issues with the latter added prefix
 
     def calculate_different_length_adj(self, word: str):
+        """
+        Given a word, "word", find all connections to different length words on the horosphere.
+        If the word has length n, then the different length connections we find will have length n+2.
 
+        :param word: A word that does NOT start with the ray to infinity on the horosphere.
+        :return: The list of all such different length words.
+        """
+
+        # "suffix" is the word without the ray at the beginning
         suffix = Word(word, self.c_map, self.o_map)
         suffix_state = self.locate_associated_state(suffix)
-        a_suffix_state = self.locate_associated_state(suffix.copy().insert(0, 'a'))
-        c_suffix_state = self.locate_associated_state(suffix.copy().insert(0, 'c'))
+
+        # Append 'a' or 'c' to the beginning of the reduced word
+        a_suffix_state = self.locate_associated_state(suffix.copy().insert(0, self.ray[0]))
+        c_suffix_state = self.locate_associated_state(suffix.copy().insert(0, self.ray[1]))
+
         # Need better variable name, the contents of this set represent which letters can commute forward and cause
         # issue with the prefix of a word. This set will only ever have either 'a', 'c', or will be empty
         ac_suffix_state = set(a_suffix_state[1]).union(set(c_suffix_state[1])).difference(set(suffix_state[1]))
 
+        # If there are no such issues, then there are no different length adjacent words; exit
         if len(ac_suffix_state) == 0:
             return []
 
         adjacencies = []
+
         # Word (suffix) has even length
         if len(suffix) % 2 == 0:
-            if 'a' in ac_suffix_state:
-                # Lengthen word by a letter obtained from our horosphere generating equation for same length words
+            if self.ray[0] in ac_suffix_state:
+                # Lengthen word by a (shortlex) legal next letter 
                 for next_letter in self.alphabet.copy().difference(set(suffix_state[1])).difference(ac_suffix_state):
                     adjacencies.append([word, suffix.copy().shortlex_append(next_letter)])
                 pass
-            if 'c' in ac_suffix_state:
+            if self.ray[1] in ac_suffix_state:
                 # Shorten word by one of its possible last letters
                 for last_letter in suffix_state[1]:
                     adjacencies.append([word, word[::-1].replace(last_letter, '', 1)[::-1]])
 
         # Word (suffix) has odd length
         else:
-            if 'a' in ac_suffix_state:
-                # Shorten word by one of its possible last letters
+            if self.ray[0] in ac_suffix_state:
+                # Shorten
                 for last_letter in suffix_state[1]:
                     adjacencies.append([word, word[::-1].replace(last_letter, '', 1)[::-1]])
-            if 'c' in ac_suffix_state:
+            if self.ray[1] in ac_suffix_state:
                 # Lengthen
                 for next_letter in self.alphabet.copy().difference(set(suffix_state[1])).difference(ac_suffix_state):
                     adjacencies.append([word, suffix.copy().shortlex_append(next_letter)])
         return adjacencies
 
     def calculate_word_adj(self, word):
+        """
+        Use "calculate_same_length_word_adj" and "calculate_different_length_adj" to find all adjacent words overall.
+
+        :param word: A word that does NOT start with the ray to infinity on the horosphere.
+        :return: All adjacent words.
+        """
+
         adjacencies = []
         adjacencies.extend(self.calculate_same_length_word_adj(word))
         adjacencies.extend(self.calculate_different_length_adj(word))
         return adjacencies
 
-    def calculate_same_length_word_adj(self, word: str):
+    def calculate_horosphere_edges(self, word_list: list[str], length: int):
+        """
+        Add all the edges to the horosphere. 
+
+        :param word_list: List of all ShortLex words (prefixes).
+        :param length: Length of the longest ShortLex word.
+        :return: All edges on the graph.
         """
 
-        :param word: A word that does NOT start with the ray to infinity on the horosphere
-        :return:
-        """
-        if len(word) == 0:
-            return [word]
-        adjacencies = []
-        word_node = self.locate_associated_state(word)
+        # Intialize the string "acacac..."
+        ray_string = (self.ray[0] + self.ray[1]) * length
 
-        # Finds connections between same length words on the horosphere
-        for last_letter in word_node[1]:
-            # print(word_node[1])
-            # print(f"Last Letter: {last_letter}")
-            # Remove the first instance of the last letter from the right end of the word; This is our reduced word
-            reduced_word = Word(word[::-1].replace(last_letter, '', 1)[::-1], self.c_map, self.o_map)
-            # print(f"Word: {word}, Reduced Word: {reduced_word}")
-            reduced_word_state = self.locate_associated_state(reduced_word)
-            a_aug_word_state = self.locate_associated_state(reduced_word.copy().insert(0, 'a'))
-            c_aug_word_state = self.locate_associated_state(reduced_word.copy().insert(0, 'c'))
-
-            # I believe this is where the issue is, sometimes an a can commute all the way forward and this is meand to stop that
-            connecting_letters = self.alphabet.copy().difference(set(reduced_word_state[1]))
-            ray_augmented_letters = set(a_aug_word_state[1]).union(set(c_aug_word_state[1]))
-            # The extra difference of set(reduced_word_state[1]) here is unnecessary see proof on blackboard
-            connecting_letters = connecting_letters.difference(ray_augmented_letters.difference(set(reduced_word_state[1])))
-
-            for letter in connecting_letters:
-                # print(f"Word: {word}, Reduced Word: {reduced_word.copy().shortlex_append(letter)}, Letter: {letter}")
-                adjacencies.append((word, reduced_word.copy().shortlex_append(letter)))
-
-        return adjacencies
-
-        # By construction, word cannot start with 'a' or 'c' as this would cause issues with the latter added prefix
-        # prefixed_words = [word.copy().insert(0, 'a'), word.copy().insert(0, 'c')]
-        # last_letters = word.last_letters()
-        # Word(word.word_as_list.insert(0, 'a'))
-
-    def adj_words(self, word, G):
-        if word == '':
-            return
-
-        word_prefix = word[:len(word) // 2]
-        word_suffix = word[len(word) // 2:]
-        word_node = self.locate_associated_state(word_suffix)
-
-        # Finds connections between same length words on the horosphere
-        for last_letter in word_node[1]:
-            # Remove the first instance of the last letter from the right end of the word; This is our reduced word
-            adj_word = word_suffix[::-1].replace(last_letter, '', 1)[::-1]
-
-            for add in self.locate_associated_state(adj_word)[0]:
-                # add the possible legal remaining letters, so we are still on the horosphere
-                # if the length of the test word is 2, then 'ac' and 'aa' will get registered as on the horosphere
-                if len(word) == 2:
-                    # so we do not consider possible added letters that would be on the ray or cancel
-                    if add not in {'a', 'c'}:
-                        # print(word, '--', word[:len(word) // 2] + adj_word + add)
-                        G.add_node(word[:len(word) // 2] + adj_word + add)
-                        if word[:len(word) // 2] + adj_word + add != word:
-                            G.add_edge(word, word[:len(word) // 2] + adj_word + add)
-                else:
-                    G.add_node(word[:len(word) // 2] + adj_word + add)
-                    if word[:len(word) // 2] + adj_word + add != word:
-                        # print(word, '--')
-                        G.add_edge(word, word[:len(word) // 2] + adj_word + add)
-
-    def calculate_horosphere_edges(self, word_list):
         edges = []
         edges_set = set()
         processed_edges = []
 
+        # Extend edges with all adjacencies on the horosphere.
         for word in word_list:
             edges.extend(self.calculate_word_adj(word))
 
+        # Append the prefix to our edges
         for edge in edges:
-            uv = []
+            prefix_edge = []
             for u in edge:
-                idx = 0
-                prefix = ''
-                for i in range(len(u)):
-                    prefix = prefix + self.ray[idx]
-                    idx = (idx + 1) % 2
-                uv.append(prefix + str(u))
-            processed_edges.append(uv)
-            edges_set.add(tuple(uv))
+                # idx = 0
+                prefix = ray_string[:len(u)]
+                # for i in range(len(u)):
+                #     prefix = prefix + self.ray[idx]
+                #     idx = (idx + 1) % 2
+                prefix_edge.append(prefix + str(u))
+            processed_edges.append(prefix_edge)
+            edges_set.add(tuple(prefix_edge))
 
         processed_edges.pop(0)
         processed_edges = [edge for edge in processed_edges if edge[0] != edge[1]]
@@ -207,7 +220,7 @@ class HorosphereGenerator:
     def horosphere_as_networkx(self, length):
         words = self.get_all_length_n_words(length)
         print(f"Words of length {length} calculated: \n\t\t {len(words)} words found")
-        processed_edges = self.calculate_horosphere_edges(words)
+        processed_edges = self.calculate_horosphere_edges(words, length)
         print(f"Words processing completed: \n\t\t {len(words)} words processed")
 
         G = networkx.Graph()
@@ -335,3 +348,32 @@ class HorosphereGenerator:
 # #plt.show()
 #
 # #print(processed_edges)
+
+# def adj_words(self, word, G):
+#     if word == '':
+#         return
+
+#     word_prefix = word[:len(word) // 2]
+#     word_suffix = word[len(word) // 2:]
+#     word_node = self.locate_associated_state(word_suffix)
+
+#     # Finds connections between same length words on the horosphere
+#     for last_letter in word_node[1]:
+#         # Remove the first instance of the last letter from the right end of the word; This is our reduced word
+#         adj_word = word_suffix[::-1].replace(last_letter, '', 1)[::-1]
+
+#         for add in self.locate_associated_state(adj_word)[0]:
+#             # add the possible legal remaining letters, so we are still on the horosphere
+#             # if the length of the test word is 2, then 'ac' and 'aa' will get registered as on the horosphere
+#             if len(word) == 2:
+#                 # so we do not consider possible added letters that would be on the ray or cancel
+#                 if add not in {'a', 'c'}:
+#                     # print(word, '--', word[:len(word) // 2] + adj_word + add)
+#                     G.add_node(word[:len(word) // 2] + adj_word + add)
+#                     if word[:len(word) // 2] + adj_word + add != word:
+#                         G.add_edge(word, word[:len(word) // 2] + adj_word + add)
+#             else:
+#                 G.add_node(word[:len(word) // 2] + adj_word + add)
+#                 if word[:len(word) // 2] + adj_word + add != word:
+#                     # print(word, '--')
+#                     G.add_edge(word, word[:len(word) // 2] + adj_word + add)
